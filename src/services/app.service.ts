@@ -12,12 +12,15 @@ export class AppService {
 		private readonly profileRepo: Repository<Profile>,
 	) {}
 
-	public getApps() {
+	public all() {
 		return this.appRepo.find();
 	}
 
-	public get(id: number) {
-		return this.appRepo.findOne(id, { relations: ['profiles'] });
+	public get(id: number | string) {
+		if (typeof id === 'string') {
+			return this.appRepo.findOne({ where: { key: id }});
+		}
+		return this.appRepo.findOne(id);
 	}
 
 	public async create(data: Partial<App>) {

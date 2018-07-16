@@ -18,7 +18,7 @@ export class AppController {
 
 	@Get()
 	public async all() {
-		const apps = await this.appService.getApps();
+		const apps = await this.appService.all();
 		return apps;
 	}
 
