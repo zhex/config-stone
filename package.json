@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "name": "config-stone",
+  "version": "0.1.0",
+  "description": "config management server",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ZheX <zhex81@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.18.2",
+    "prettier": "^1.13.7",
+    "tslint": "^5.10.0",
+    "tslint-config-prettier": "^1.13.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@nestjs/common": "^5.1.0",
+    "@nestjs/core": "^5.1.0",
+    "@nestjs/typeorm": "^5.0.2",
+    "class-transformer": "^0.1.9",
+    "class-validator": "^0.8.5",
+    "mysql": "^2.15.0",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.2.2",
+    "typeorm": "^0.2.7"
+  }
+}
