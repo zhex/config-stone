@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { App } from '../entities/app.entity';
 import { Profile } from '../entities/profile.entity';
 
 @Injectable()
@@ -15,8 +14,11 @@ export class ProfileService {
 		return this.profileRepo.findOne({ where: { appKey }});
 	}
 
-	public get(id: number) {
-		return this.profileRepo.findOne(id);
+	public get(id: string | number, profileKey?: string) {
+		if (typeof id === 'number') {
+			return this.profileRepo.findOne(id);
+		}
+		return this.profileRepo.findOne({ appKey: id, key: profileKey });
 	}
 
 	public async create(data: Partial<Profile>) {
