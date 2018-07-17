@@ -1,16 +1,14 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { EtcdService, IWatchMessage } from '../services/etcd.service';
-import { NotifyService } from '../services/notify.service';
+import { Events, NotifyService } from '../services/notify.service';
 
 @Controller('api')
 export class ConfigController {
 	constructor(
 		private readonly etcdService: EtcdService,
 		private readonly notifyService: NotifyService,
-	) {
-		this.notifyService.on(Symbol.for('config-update'), console.log);
-	}
+	) {}
 
 	@Get(':appKey/:profileKey')
 	public async profile(
@@ -21,7 +19,7 @@ export class ConfigController {
 	) {
 		if (version) {
 			const timer = setTimeout(() => {
-				this.notifyService.off(Symbol.for('config-update'), handler);
+				this.notifyService.off(Events.configUpdate, handler);
 				res.status(304).end();
 			}, 30 * 1000);
 
@@ -35,7 +33,7 @@ export class ConfigController {
 					res.json(data.config);
 				}
 			}
-			this.notifyService.on(Symbol.for('config-update'), handler);
+			this.notifyService.on(Events.configUpdate, handler);
 		} else {
 			const config = await this.etcdService.getConfig(appKey, profileKey);
 			res.json(config);
