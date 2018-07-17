@@ -19,7 +19,7 @@ export class ProfileService {
 	}
 
 	public get(id: number) {
-		return this.profileRepo.findOne(id);
+		return this.profileRepo.findOne(id, { relations: ['items'] });
 	}
 
 	public async create(data: Partial<Profile>) {

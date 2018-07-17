@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { App } from './app.entity';
 import { Base } from './base.entity';
+import { Item } from './item.entity';
 
 @Entity('profiles')
 export class Profile extends Base {
@@ -16,4 +17,7 @@ export class Profile extends Base {
 	@ManyToOne(() => App)
 	@JoinColumn({ name: 'app_id' })
 	public app?: App;
+
+	@OneToMany(() => Item, item =>item.profile)
+	public items?: Item[];
 }

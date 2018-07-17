@@ -32,3 +32,9 @@ export const logger = createLogger({
 	),
 	transports: [new transports.Console()],
 });
+
+export class LogStream {
+	public write(msg: string) {
+		logger.info(msg.replace('\n', ''));
+	}
+}

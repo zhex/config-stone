@@ -46,7 +46,7 @@ export class ProfileController {
 		return null;
 	}
 
-	@Put()
+	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
 	public async update(
 		@Param('id') id: number,
@@ -60,6 +60,13 @@ export class ProfileController {
 	@HttpCode(status.NO_CONTENT)
 	public async delete(@Param('id') id: number) {
 		await this.profileService.del(id);
+		return null;
+	}
+
+	@Post(':id/release')
+	@HttpCode(status.NO_CONTENT)
+	public async release(@Param('id') id: number) {
+		await this.profileService.release(id);
 		return null;
 	}
 }
