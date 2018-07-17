@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "description": "config management server",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon"
+    "dev": "NODE_ENV=development nodemon",
+    "clean": "rm -rf dist",
+    "build:server": "tsc -p tsconfig.json --skipLibCheck"
   },
   "author": "ZheX <zhex81@gmail.com>",
   "license": "MIT",
