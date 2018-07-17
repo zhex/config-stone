@@ -9,7 +9,18 @@ export class EtcdService {
 		this.client = new Etcd3()
 	}
 
-	public set(key: string, value: string) {
-		return this.client.put(key).value(value);
+	public setConfig(appKey: string, profileKey: string, value: any) {
+		const data = JSON.stringify(value);
+		const key = this.getConfigKey(appKey, profileKey);
+		return this.client.put(key).value(data);
+	}
+
+	public getConfig(appKey: string, profileKey: string) {
+		const key = this.getConfigKey(appKey, profileKey);
+		return this.client.get(key).json();
+	}
+
+	public getConfigKey(appKey: string, profileKey: string) {
+		return `config-data/${appKey}/${profileKey}`;
 	}
 }

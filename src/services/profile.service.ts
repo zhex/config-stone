@@ -45,9 +45,6 @@ export class ProfileService {
 			colleciton[item.key] = item.value;
 			return colleciton;
 		}, {});
-		await this.etcdService.set(
-			`config-data/${profile.app.key}/${profile.key}`,
-			JSON.stringify(val),
-		);
+		await this.etcdService.setConfig(profile.app.key, profile.key, val);
 	}
 }
