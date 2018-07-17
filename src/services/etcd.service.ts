@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Etcd3 } from 'etcd3';
-import { NotifyService, Events } from './notify.service';
+import { Events, NotifyService } from './notify.service';
 
 export interface IWatchMessage {
 	appKey: string;
@@ -26,7 +26,17 @@ export class EtcdService {
 
 	public getConfig(appKey: string, profileKey: string) {
 		const key = this.getConfigKey(appKey, profileKey);
-		return this.client.get(key).json();
+		return this.client.get(key).exec().then(res => {
+			if (!res.kvs.length) {
+				return null;
+			}
+			return {
+				appKey,
+				profileKey,
+				version: res.kvs[0].version,
+				config: JSON.parse(res.kvs[0].value.toString()),
+			};
+		});
 	}
 
 	public getConfigKey(appKey: string, profileKey: string) {
