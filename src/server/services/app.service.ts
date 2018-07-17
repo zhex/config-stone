@@ -21,7 +21,7 @@ export class AppService {
 	public async create(data: Partial<App>): Promise<App> {
 		let app;
 		await getManager().transaction(async t => {
-			app = await t.save(data);
+			app = await t.save(App, data);
 			await t.insert(Profile, {
 				name: 'Default',
 				key: 'default',
