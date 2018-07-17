@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
+import * as status from 'http-status';
 import { EtcdService, IWatchMessage } from '../services/etcd.service';
 import { Events, NotifyService } from '../services/notify.service';
 
@@ -18,22 +19,23 @@ export class ConfigController {
 		@Res() res: Response,
 	) {
 		if (version) {
-			const timer = setTimeout(() => {
-				this.notifyService.off(Events.configUpdate, handler);
-				res.status(304).end();
-			}, 30 * 1000);
-
-			function handler(data: IWatchMessage) {
+			const handler = (data: IWatchMessage) => {
 				if (
 					data.version > version &&
 					data.appKey === appKey &&
 					data.profileKey === profileKey
 				) {
 					clearTimeout(timer);
-					res.json(data.config);
+					res.json(data);
 				}
-			}
-			this.notifyService.on(Events.configUpdate, handler);
+			};
+
+			const timer = setTimeout(() => {
+				this.notifyService.removeListener(Events.configUpdate, handler);
+				res.status(status.NO_CONTENT).end();
+			}, 15 * 1000);
+
+			this.notifyService.once(Events.configUpdate, handler);
 		} else {
 			const config = await this.etcdService.getConfig(appKey, profileKey);
 			res.json(config);
