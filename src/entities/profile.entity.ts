@@ -10,10 +10,10 @@ export class Profile extends Base {
 	@Column('varchar', { length: 100 })
 	public key: string;
 
-	@Column('varchar', { name: 'app_key', length: 100 })
-	public appKey: string;
+	@Column('int', { name: 'app_id' })
+	public appId: number;
 
 	@ManyToOne(() => App)
-	@JoinColumn({ referencedColumnName: 'key', name: 'app_key' })
+	@JoinColumn({ name: 'app_id' })
 	public app?: App;
 }

@@ -2,23 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profile } from '../entities/profile.entity';
+import { EtcdService } from './etcd.service';
+import { ItemService } from './item.service';
 
 @Injectable()
 export class ProfileService {
 	constructor(
 		@InjectRepository(Profile)
 		private readonly profileRepo: Repository<Profile>,
+		private readonly itemService: ItemService,
+		private readonly etcdService: EtcdService,
 	) {}
 
-	public all(appKey: string) {
-		return this.profileRepo.findOne({ where: { appKey }});
+	public all(appId: number) {
+		return this.profileRepo.find({ where: { appId } });
 	}
 
-	public get(id: string | number, profileKey?: string) {
-		if (typeof id === 'number') {
-			return this.profileRepo.findOne(id);
-		}
-		return this.profileRepo.findOne({ appKey: id, key: profileKey });
+	public get(id: number) {
+		return this.profileRepo.findOne(id);
 	}
 
 	public async create(data: Partial<Profile>) {
@@ -33,5 +34,20 @@ export class ProfileService {
 
 	public async del(id: number) {
 		return this.profileRepo.delete(id);
+	}
+
+	public async release(id: number) {
+		const profile = await this.profileRepo.findOne(id, {
+			relations: ['app'],
+		})
+		const items = await this.itemService.all(id);
+		const val = items.reduce((colleciton, item) => {
+			colleciton[item.key] = item.value;
+			return colleciton;
+		}, {});
+		await this.etcdService.set(
+			`config-data/${profile.app.key}/${profile.key}`,
+			JSON.stringify(val),
+		);
 	}
 }

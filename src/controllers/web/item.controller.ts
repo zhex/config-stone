@@ -5,16 +5,16 @@ import {
 	Get,
 	HttpCode,
 	HttpException,
+	Param,
 	Post,
 	Put,
-	Query,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { Item } from '../../entities/item.entity';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
 
-@Controller('web/api/apps/:appKey/profiles/:profileKey/items')
+@Controller('web/api/apps/:appId/profiles/:profileId/items')
 export class ItemController {
 	constructor(
 		private readonly profileService: ProfileService,
@@ -23,44 +23,47 @@ export class ItemController {
 
 	@Get()
 	public async all(
-		@Query('appKey') appKey: string,
-		@Query('profileKey') profileKey: string,
+		@Param('profileId') profileId: number,
 	) {
-		return this.itemservice.all(appKey, profileKey);
+		return this.itemservice.all(profileId);
 	}
 
 	@Get(':id')
-	public async get(@Query('id') id: number) {
+	public async get(@Param('id') id: number) {
 		return this.itemservice.get(id);
 	}
 
 	@Post()
 	@HttpCode(status.CREATED)
 	public async create(
-		@Query('appKey') appKey: string,
-		@Query('profileKey') profileKey: string,
-		@Body() data: Partial<Item>,
+		@Param('profileId') profileId: number,
+		@Body() data: Array<Partial<Item>>,
 	) {
-		const profile = await this.profileService.get(appKey, profileKey);
+		const profile = await this.profileService.get(profileId);
 		if (!profile) {
 			throw new HttpException('invalid profile key', status.BAD_REQUEST);
 		}
-		data.appKey = profile.appKey;
-		data.profileKey = profile.key;
+		data.forEach((d, idx) => {
+			d.profileId = profile.id;
+			d.order = idx + 1;
+		});
 		await this.itemservice.create(data);
 		return null;
 	}
 
-	@Put()
+	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async update(@Query('id') id: number, @Body() data: Partial<Item>) {
+	public async update(
+		@Param('id') id: number,
+		@Body() data: Array<Partial<Item>>,
+	) {
 		await this.itemservice.update(id, data);
 		return null;
 	}
 
 	@Delete(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async delete(@Query('id') id: number) {
+	public async delete(@Param('id') id: number) {
 		await this.itemservice.del(id);
 		return null;
 	}

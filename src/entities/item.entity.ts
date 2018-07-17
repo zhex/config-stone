@@ -12,9 +12,6 @@ export class Item extends Base {
 	@Column('int')
 	public order: number;
 
-	@Column('varchar', { name: 'app_key', length: 100 })
-	public appKey: string;
-
-	@Column('varchar', { name: 'profile_key', length: 100 })
-	public profileKey: string;
+	@Column('int', { name: 'profile_id' })
+	public profileId: number;
 }

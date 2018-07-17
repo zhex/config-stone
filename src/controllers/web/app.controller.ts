@@ -4,9 +4,9 @@ import {
 	Delete,
 	Get,
 	HttpCode,
+	Param,
 	Post,
 	Put,
-	Query,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { App } from '../../entities/app.entity';
@@ -23,7 +23,7 @@ export class AppController {
 	}
 
 	@Get(':id')
-	public async get(@Query('id') id: number) {
+	public async get(@Param('id') id: number) {
 		return this.appService.get(id);
 	}
 
@@ -34,16 +34,16 @@ export class AppController {
 		return null;
 	}
 
-	@Put()
+	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async update(@Query('id') id: number, @Body() data: Partial<App>) {
+	public async update(@Param('id') id: number, @Body() data: Partial<App>) {
 		await this.appService.update(id, data);
 		return null;
 	}
 
 	@Delete(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async delete(@Query('id') id: number) {
+	public async delete(@Param('id') id: number) {
 		await this.appService.del(id);
 		return null;
 	}

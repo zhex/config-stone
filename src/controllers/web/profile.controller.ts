@@ -5,16 +5,16 @@ import {
 	Get,
 	HttpCode,
 	HttpException,
+	Param,
 	Post,
 	Put,
-	Query,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { Profile } from '../../entities/profile.entity';
 import { AppService } from '../../services/app.service';
 import { ProfileService } from '../../services/profile.service';
 
-@Controller('web/api/apps/:appKey/profiles')
+@Controller('web/api/apps/:appId/profiles')
 export class ProfileController {
 	constructor(
 		private readonly appService: AppService,
@@ -22,26 +22,26 @@ export class ProfileController {
 	) {}
 
 	@Get()
-	public async all(@Query('appKey') appKey: string) {
-		return this.profileService.all(appKey);
+	public async all(@Param('appId') appId: number) {
+		return this.profileService.all(appId);
 	}
 
 	@Get(':id')
-	public async get(@Query('id') id: number) {
+	public async get(@Param('id') id: number) {
 		return this.profileService.get(id);
 	}
 
 	@Post()
 	@HttpCode(status.CREATED)
 	public async create(
-		@Query('appKey') appKey: string,
+		@Param('appId') appId: number,
 		@Body() data: Partial<Profile>,
 	) {
-		const app = await this.appService.get(appKey);
+		const app = await this.appService.get(appId);
 		if (!app) {
-			throw new HttpException('invalid app key', status.BAD_REQUEST);
+			throw new HttpException('invalid app id', status.BAD_REQUEST);
 		}
-		data.appKey = app.key;
+		data.appId = app.id;
 		await this.profileService.create(data);
 		return null;
 	}
@@ -49,7 +49,7 @@ export class ProfileController {
 	@Put()
 	@HttpCode(status.NO_CONTENT)
 	public async update(
-		@Query('id') id: number,
+		@Param('id') id: number,
 		@Body() data: Partial<Profile>,
 	) {
 		await this.profileService.update(id, data);
@@ -58,7 +58,7 @@ export class ProfileController {
 
 	@Delete(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async delete(@Query('id') id: number) {
+	public async delete(@Param('id') id: number) {
 		await this.profileService.del(id);
 		return null;
 	}

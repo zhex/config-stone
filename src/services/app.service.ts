@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { App } from '../entities/app.entity';
 import { Profile } from '../entities/profile.entity';
 
@@ -8,27 +8,25 @@ import { Profile } from '../entities/profile.entity';
 export class AppService {
 	constructor(
 		@InjectRepository(App) private readonly appRepo: Repository<App>,
-		@InjectRepository(Profile)
-		private readonly profileRepo: Repository<Profile>,
 	) {}
 
 	public all() {
 		return this.appRepo.find();
 	}
 
-	public get(id: number | string) {
-		if (typeof id === 'string') {
-			return this.appRepo.findOne({ where: { key: id }});
-		}
+	public get(id: number) {
 		return this.appRepo.findOne(id);
 	}
 
-	public async create(data: Partial<App>) {
-		const app = await this.appRepo.save(data);
-		await this.profileRepo.insert({
-			name: 'Default',
-			key: 'default',
-			appKey: app.key,
+	public async create(data: Partial<App>): Promise<App> {
+		let app;
+		await getManager().transaction(async t => {
+			app = await t.save(data);
+			await t.insert(Profile, {
+				name: 'Default',
+				key: 'default',
+				appId: app.id,
+			});
 		});
 		return app;
 	}
