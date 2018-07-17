@@ -38,7 +38,14 @@ export class ConfigController {
 			this.notifyService.once(Events.configUpdate, handler);
 		} else {
 			const config = await this.etcdService.getConfig(appKey, profileKey);
-			res.json(config);
+			if (!config) {
+				res.status(status.NOT_FOUND).json({
+					status: status.NOT_FOUND,
+					message: 'profile is not found',
+				});
+			} else {
+				res.json(config);
+			}
 		}
 	}
 }
