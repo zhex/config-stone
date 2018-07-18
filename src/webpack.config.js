@@ -2,24 +2,32 @@ const { join } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
-const sourcePath = join(__dirname, 'src/ui');
+const sourcePath = join(__dirname, 'ui');
+const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = {
-	mode: 'development',
+	mode: isDev ? 'development' : 'production',
 	devtool: 'cheap-sourcemap',
 	entry: {
 		vendor: [
 			'react',
 			'react-dom',
 			'redux',
+			'redux-observable',
 			'react-redux',
 			'react-router-config',
 			'react-router-dom',
+			'rxjs',
 		],
-		main: [join(sourcePath, 'main.tsx'), 'webpack-hot-middleware/client'],
+		main: isDev ? [
+			join(sourcePath, 'main.tsx'),
+			'webpack-hot-middleware/client',
+		] : [
+			join(sourcePath, 'main.tsx'),
+		],
 	},
 	output: {
-		path: join(__dirname, 'dist/ui'),
+		path: join(__dirname, '../dist/ui'),
 		filename: '[name].bundle.js',
 		publicPath: '/',
 	},

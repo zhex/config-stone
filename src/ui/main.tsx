@@ -1,4 +1,4 @@
-import { Application } from 'modules/Application';
+import { Application } from 'modules/layout';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { store } from 'redux/store';

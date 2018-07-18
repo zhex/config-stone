@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { AppList as List } from './components/AppList';
 
-class List extends React.PureComponent {
+class AppList extends React.PureComponent {
 	public render() {
 		return (
-			<div>app list</div>
+			<div>
+				<h3>app list</h3>
+				<List />
+			</div>
 		);
 	}
 }
 
-export const AppList = connect()(List);
+export const AppListContainer = connect()(AppList);

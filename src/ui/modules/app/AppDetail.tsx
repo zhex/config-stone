@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-class Detail extends React.PureComponent {
+class AppDetail extends React.PureComponent {
 	public render() {
 		return (
 			<div>app detail</div>
@@ -9,4 +9,4 @@ class Detail extends React.PureComponent {
 	}
 }
 
-export const AppDetail = connect()(Detail);
+export const AppDetailContainer = connect()(AppDetail);

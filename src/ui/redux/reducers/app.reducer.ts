@@ -1,3 +1,5 @@
+import { actionTypes } from "../actions";
+
 const initState = {
 	loading: false,
 	progressing: false,
@@ -7,5 +9,12 @@ const initState = {
 };
 
 export const appReducer = (state = initState, { type, payload }) => {
-	return state;
+	switch(type) {
+		case actionTypes.appList.requested:
+			return { ...state, loading: true };
+		case actionTypes.appList.completed:
+			return { ...state, data: payload, loading: false };
+		default:
+			return state;
+	}
 };

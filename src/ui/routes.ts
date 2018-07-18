@@ -1,8 +1,8 @@
 import { RouteConfig } from "react-router-config";
 
-import * as appMod from 'modules/app/index';
+import * as app from 'modules/app';
 
 export const routes: RouteConfig[] = [
-	{ path: '/', exact: true, component: appMod.AppList },
-	{ path: '/apps/:id', exact: true, component: appMod.AppDetail },
+	{ path: '/', exact: true, component: app.AppListContainer },
+	{ path: '/apps/:id', exact: true, component: app.AppDetailContainer },
 ];

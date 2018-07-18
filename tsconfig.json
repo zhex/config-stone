@@ -10,14 +10,14 @@
     "target": "es6",
     "sourceMap": true,
     "allowJs": true,
-    "outDir": "./dist/server",
+    "outDir": "./dist",
   },
   "include": [
-    "src/**/*"
+    "src/server/**/*"
   ],
   "exclude": [
     "node_modules",
-    "src/ui",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "webpack.config.js"
   ]
 }
