@@ -1,23 +1,19 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es6",
     "declaration": false,
     "noImplicitAny": false,
     "removeComments": true,
+    "jsx": "react",
     "noLib": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es6",
     "sourceMap": true,
     "allowJs": true,
-    "outDir": "./dist/server",
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/ui",
-    "**/*.spec.ts"
-  ]
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"]
+    }
+  }
 }
