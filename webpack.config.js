@@ -1,5 +1,6 @@
 const { join } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 const sourcePath = join(__dirname, 'src/ui');
 
@@ -7,8 +8,11 @@ module.exports = {
 	mode: 'development',
 	devtool: 'cheap-sourcemap',
 	entry: {
-		vendor: ['react', 'react-dom'],
-		main: join(sourcePath, 'main.tsx'),
+		vendor: ['react', 'react-dom', 'redux', 'react-redux'],
+		main: [
+			join(sourcePath, 'main.tsx'),
+			'webpack-hot-middleware/client',
+		],
 	},
 	output: {
 		path: join(__dirname, 'dist/ui'),
@@ -19,10 +23,14 @@ module.exports = {
 		rules: [
 			{
 				test: /\.tsx?$/,
-				loader: 'ts-loader',
-				options: {
-					configFile: join(sourcePath, 'tsconfig.json'),
-				},
+				use: [
+					{
+						loader: 'ts-loader',
+						options: {
+							configFile: join(sourcePath, 'tsconfig.json'),
+						},
+					},
+				],
 			},
 		],
 	},
@@ -44,8 +52,19 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
+			title: 'Config Stone',
 			hash: true,
 			inject: true,
+			filename: 'index.html',
+			template: join(sourcePath, 'index.tpl.html'),
 		}),
+		new webpack.HotModuleReplacementPlugin(),
 	],
+	node: {
+		dgram: 'empty',
+		fs: 'empty',
+		net: 'empty',
+		tls: 'empty',
+		child_process: 'empty',
+	},
 };
