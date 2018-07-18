@@ -8,11 +8,15 @@ module.exports = {
 	mode: 'development',
 	devtool: 'cheap-sourcemap',
 	entry: {
-		vendor: ['react', 'react-dom', 'redux', 'react-redux'],
-		main: [
-			join(sourcePath, 'main.tsx'),
-			'webpack-hot-middleware/client',
+		vendor: [
+			'react',
+			'react-dom',
+			'redux',
+			'react-redux',
+			'react-router-config',
+			'react-router-dom',
 		],
+		main: [join(sourcePath, 'main.tsx'), 'webpack-hot-middleware/client'],
 	},
 	output: {
 		path: join(__dirname, 'dist/ui'),
@@ -31,6 +35,10 @@ module.exports = {
 						},
 					},
 				],
+			},
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader'],
 			},
 		],
 	},
