@@ -2,7 +2,7 @@ import { Layout } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { actions } from 'redux/actions';
-import * as appSel from 'redux/selectors/app.selector';
+import * as sel from 'redux/selectors';
 import { AppList as List } from './components/AppList';
 
 export interface IAppListProps {
@@ -37,8 +37,8 @@ class AppList extends React.PureComponent<IAppListProps> {
 }
 
 const mapStates = state => ({
-	apps: appSel.appList(state),
-	loading: appSel.appLoading(state),
+	apps: sel.appList(state),
+	loading: sel.appLoading(state),
 });
 
 const mapActions = dispatch => ({
