@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { appActions } from 'redux/actions';
+import { actions } from 'redux/actions';
 import * as appSel from 'redux/selectors/app.selector';
 import { AppList as List } from './components/AppList';
 
@@ -43,7 +43,7 @@ const mapStates = state => ({
 
 const mapActions = dispatch => ({
 	onLoad() {
-		dispatch(appActions.getAppList());
+		dispatch(actions.apps.fetchStart());
 	},
 });
 

@@ -1,22 +1,20 @@
-import { actionTypes } from "../actions";
+import { combineReducers } from 'redux';
+import crud from 'redux-crud';
+import { actionTypes } from '../actions';
 
-const initState = {
-	loading: false,
-	progressing: false,
-	data: [],
-	error: null,
-	item: null,
-};
-
-export const appReducer = (state = initState, { type, payload }) => {
-	switch(type) {
-		case actionTypes.getAppList.requested:
-			return { ...state, loading: true, error: null };
-		case actionTypes.getAppList.completed:
-			return { ...state, data: payload, loading: false };
-		case actionTypes.getAppList.failed:
-			return { ...state, loading: false, error: payload };
+function loading(state = false, { type }) {
+	switch (type) {
+		case actionTypes.apps.fetchStart:
+			return true;
+		case actionTypes.apps.fetchSuccess:
+		case actionTypes.apps.fetchError:
+			return false;
 		default:
 			return state;
 	}
-};
+}
+
+export const appsReducer = combineReducers({
+	data: crud.List.reducersFor('apps'),
+	loading,
+});

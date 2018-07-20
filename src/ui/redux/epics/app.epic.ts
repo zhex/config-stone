@@ -1,96 +1,82 @@
+import { get } from 'lodash';
 import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { actionTypes } from '../actions';
+import { catchError, filter, map, mergeMap } from 'rxjs/operators';
+import { actions, actionTypes } from '../actions';
 
 const apiPrefix = '/web/api/apps';
 
-const getAppListEpic = action$ =>
+const fetchApps = action$ =>
 	action$.pipe(
-		ofType(actionTypes.getAppList.requested),
+		ofType(actionTypes.apps.fetchStart),
+		filter(({ data }) => !get(data, 'id')),
 		mergeMap(() =>
 			ajax(apiPrefix).pipe(
-				map(data => ({
-					type: actionTypes.getAppList.completed,
-					payload: data.response,
-				})),
-				catchError(err =>
-					of({
-						type: actionTypes.getAppList.failed,
-						payload: err.message,
+				map(result =>
+					actions.apps.fetchSuccess(result.response, {
+						replace: true,
 					}),
 				),
+				catchError(err => of(actions.apps.fetchError(err))),
 			),
 		),
 	);
 
-const createAppEpic = action$ =>
+const fetchApp = action$ =>
 	action$.pipe(
-		ofType(actionTypes.createApp.requested),
-		mergeMap(({ payload }) =>
+		ofType(actionTypes.apps.fetchStart),
+		filter(({ data }) => get(data, 'id')),
+		mergeMap(({ data }) =>
+			ajax(apiPrefix + '/' + data.id).pipe(
+				map(result => actions.apps.fetchSuccess(result.response)),
+				catchError(err => of(actions.apps.fetchError(err))),
+			),
+		),
+	);
+
+const createApp = action$ =>
+	action$.pipe(
+		ofType(actionTypes.apps.createStart),
+		mergeMap(({ data }) =>
 			ajax({
 				method: 'post',
 				url: apiPrefix,
-				body: payload,
+				body: data,
 			}).pipe(
-				map(data => ({
-					type: actionTypes.createApp.completed,
-					payload: data.response,
-				})),
-				catchError(err =>
-					of({
-						type: actionTypes.createApp.failed,
-						payload: err.message,
-					}),
-				),
+				map(result => actions.apps.createSuccess(result.response)),
+				catchError(err => of(actions.apps.createError(err))),
 			),
 		),
 	);
 
-const updateAppEpic = action$ =>
+const updateApp = action$ =>
 	action$.pipe(
-		ofType(actionTypes.updateApp.requested),
-		mergeMap(({ payload }) =>
+		ofType(actionTypes.apps.updateStart),
+		mergeMap(({ data }) =>
 			ajax({
 				method: 'put',
-				url: apiPrefix + '/' + payload.id,
-				body: payload.data,
+				url: apiPrefix + '/' + data.id,
+				body: data,
 			}).pipe(
-				map(data => ({
-					type: actionTypes.updateApp.completed,
-					payload: data.response,
-				})),
-				catchError(err =>
-					of({
-						type: actionTypes.updateApp.failed,
-						payload: err.message,
-					}),
-				),
+				map(() => actions.apps.updateSuccess()),
+				catchError(err => of(actions.apps.updateError(err))),
 			),
 		),
 	);
 
-const deleteAppEpic = action$ =>
+const deleteApp = action$ =>
 	action$.pipe(
-		ofType(actionTypes.deleteApp.requested),
-		mergeMap(({ payload }) =>
+		ofType(actionTypes.apps.deleteStart),
+		mergeMap(({ data }) =>
 			ajax({
 				method: 'delete',
-				url: apiPrefix + '/' + payload,
+				url: apiPrefix + '/' + data.id,
 			}).pipe(
-				map(data => ({
-					type: actionTypes.deleteApp.completed,
-					payload: data.response,
-				})),
-				catchError(err =>
-					of({
-						type: actionTypes.deleteApp.failed,
-						payload: err.message,
-					}),
-				),
+				map(() => actions.apps.deleteSuccess()),
+				catchError(err => of(actions.apps.deleteError(err))),
 			),
 		),
 	);
 
-export default [getAppListEpic, createAppEpic, updateAppEpic, deleteAppEpic];
+export default [fetchApps, fetchApp, createApp, updateApp, deleteApp];

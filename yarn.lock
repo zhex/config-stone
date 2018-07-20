@@ -69,6 +69,10 @@
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.6.2.tgz#12cfaba693ba20f114ed5765467ff25fdf67ddb0"
 
+"@types/lodash@^4.14.112":
+  version "4.14.112"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.112.tgz#4a8d8e5716b97a1ac01fe1931ad1e4cba719de5a"
+
 "@types/mime@*":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"
@@ -286,6 +290,13 @@ acorn-dynamic-import@^3.0.0:
 acorn@^5.0.0, acorn@^5.6.2:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.1.tgz#f095829297706a7c9776958c0afc8930a9b9d9d8"
+
+action-names@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/action-names/-/action-names-0.4.0.tgz#d8dbb58d24e281c379203e8f330b1f7321a416a2"
+  dependencies:
+    lodash.snakecase "^3.0.1"
+    lodash.trim "^3.0.1"
 
 add-dom-event-listener@1.x:
   version "1.0.2"
@@ -2279,7 +2290,7 @@ intersperse@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/intersperse/-/intersperse-1.0.0.tgz#f2561fb1cfef9f5277cc3347a22886b4351a5181"
 
-invariant@^2.0.0, invariant@^2.2.1, invariant@^2.2.4:
+invariant@^2.0.0, invariant@^2.1.0, invariant@^2.2.1, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -2600,9 +2611,37 @@ lodash-es@^4.17.5:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.10.tgz#62cd7104cdf5dd87f235a837f0ede0e8e5117e05"
 
+lodash._basetostring@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/lodash._basetostring/-/lodash._basetostring-3.0.1.tgz#d1861d877f824a52f669832dcaf3ee15566a07d5"
+
+lodash._charsleftindex@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lodash._charsleftindex/-/lodash._charsleftindex-3.0.0.tgz#dba03352c0f276b4acc73321c51702e4cb40fd79"
+
+lodash._charsrightindex@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lodash._charsrightindex/-/lodash._charsrightindex-3.0.0.tgz#f7a0295dd6c798cd0b79cdf2fbc0da04bacb2534"
+
 lodash._getnative@^3.0.0:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
+
+lodash._isiterateecall@^3.0.0:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/lodash._isiterateecall/-/lodash._isiterateecall-3.0.9.tgz#5203ad7ba425fae842460e696db9cf3e6aac057c"
+
+lodash._root@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/lodash._root/-/lodash._root-3.0.1.tgz#fba1c4524c19ee9a5f8136b4609f017cf4ded692"
+
+lodash._trimmedleftindex@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lodash._trimmedleftindex/-/lodash._trimmedleftindex-3.0.0.tgz#0997991139251132ca8d3f24e857fef4f01d8619"
+
+lodash._trimmedrightindex@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lodash._trimmedrightindex/-/lodash._trimmedrightindex-3.0.0.tgz#94f7c32374b51f425226bec0e8f21002f8f0caed"
 
 lodash.camelcase@^4.3.0:
   version "4.3.0"
@@ -2611,6 +2650,12 @@ lodash.camelcase@^4.3.0:
 lodash.debounce@^4.0.0, lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+
+lodash.deburr@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.deburr/-/lodash.deburr-3.2.0.tgz#6da8f54334a366a7cf4c4c76ef8d80aa1b365ed5"
+  dependencies:
+    lodash._root "^3.0.0"
 
 lodash.isarguments@^3.0.0:
   version "3.1.0"
@@ -2628,9 +2673,33 @@ lodash.keys@^3.1.2:
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
 
+lodash.snakecase@^3.0.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.snakecase/-/lodash.snakecase-3.1.1.tgz#c0db98e080796f0cc47b7744b168bdf8e23c27d3"
+  dependencies:
+    lodash.deburr "^3.0.0"
+    lodash.words "^3.0.0"
+
 lodash.throttle@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+
+lodash.trim@^3.0.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.trim/-/lodash.trim-3.1.1.tgz#403c82163adbb611f7c491e916bbdcc9934c1681"
+  dependencies:
+    lodash._basetostring "^3.0.0"
+    lodash._charsleftindex "^3.0.0"
+    lodash._charsrightindex "^3.0.0"
+    lodash._isiterateecall "^3.0.0"
+    lodash._trimmedleftindex "^3.0.0"
+    lodash._trimmedrightindex "^3.0.0"
+
+lodash.words@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.words/-/lodash.words-3.2.0.tgz#4e2a8649bc08745b17c695b1a3ce8fee596623b3"
+  dependencies:
+    lodash._root "^3.0.0"
 
 lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
@@ -3571,6 +3640,10 @@ raf@^3.4.0:
   dependencies:
     performance-now "^2.1.0"
 
+ramda@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.24.1.tgz#c3b7755197f35b8dc3502228262c4c91ddb6b857"
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.0.6.tgz#d302c522948588848a8d300c932b44c24231da80"
@@ -4091,6 +4164,14 @@ readdirp@^2.0.0:
     minimatch "^3.0.2"
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
+
+redux-crud@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/redux-crud/-/redux-crud-3.3.0.tgz#26dfd656c6149fec8a07db48a5ce929d16750c3c"
+  dependencies:
+    action-names "^0.4.0"
+    invariant "^2.1.0"
+    ramda "^0.24.1"
 
 redux-observable@^1.0.0:
   version "1.0.0"

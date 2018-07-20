@@ -14,7 +14,12 @@ const renderApp = item => (
 );
 
 export const AppList: React.SFC<IAppListProps> = ({ items, loading }) => (
-	<List grid={{gutter: 20, column: 6 }} dataSource={items} renderItem={renderApp} loading={loading} />
+	<List
+		grid={{ gutter: 20, column: 6 }}
+		dataSource={items}
+		renderItem={renderApp}
+		loading={loading}
+	/>
 );
 
 AppList.displayName = 'AppList';

@@ -8,9 +8,7 @@ const composeEnhancers =
 
 const epicMiddleware = createEpicMiddleware();
 
-const middleware = applyMiddleware(
-	epicMiddleware,
-);
+const middleware = applyMiddleware(epicMiddleware);
 
 export const store = createStore(rootReducer, {}, composeEnhancers(middleware));
 
