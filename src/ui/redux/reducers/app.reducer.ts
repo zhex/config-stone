@@ -10,10 +10,12 @@ const initState = {
 
 export const appReducer = (state = initState, { type, payload }) => {
 	switch(type) {
-		case actionTypes.appList.requested:
-			return { ...state, loading: true };
-		case actionTypes.appList.completed:
+		case actionTypes.getAppList.requested:
+			return { ...state, loading: true, error: null };
+		case actionTypes.getAppList.completed:
 			return { ...state, data: payload, loading: false };
+		case actionTypes.getAppList.failed:
+			return { ...state, loading: false, error: payload };
 		default:
 			return state;
 	}
