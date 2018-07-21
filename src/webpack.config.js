@@ -1,5 +1,6 @@
 const { join } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
 
 const sourcePath = join(__dirname, 'ui');
@@ -19,12 +20,9 @@ module.exports = {
 			'react-router-dom',
 			'rxjs',
 		],
-		main: isDev ? [
-			join(sourcePath, 'main.tsx'),
-			'webpack-hot-middleware/client',
-		] : [
-			join(sourcePath, 'main.tsx'),
-		],
+		main: isDev
+			? [join(sourcePath, 'main.tsx'), 'webpack-hot-middleware/client']
+			: [join(sourcePath, 'main.tsx')],
 	},
 	output: {
 		path: join(__dirname, '../dist/ui'),
@@ -46,7 +44,18 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				use: ['style-loader', 'css-loader'],
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+				]
+			},
+			{
+				test: /\.styl$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					'style-loader'
+				],
 			},
 		],
 	},
@@ -73,6 +82,10 @@ module.exports = {
 			inject: true,
 			filename: 'index.html',
 			template: join(sourcePath, 'index.tpl.html'),
+		}),
+		new MiniCssExtractPlugin({
+			filename: isDev ? '[name].css' : '[name].[hash].css',
+			chunkFilename: isDev ? '[id].css' : '[id].[hash].css',
 		}),
 		new webpack.HotModuleReplacementPlugin(),
 	],

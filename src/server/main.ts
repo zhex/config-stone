@@ -4,17 +4,19 @@ import * as morgan from 'morgan';
 import { join } from 'path';
 import { ApplicationModule } from './application.module';
 import { LogStream } from './common/logger';
-import { webpackHotMiddlware, webpackMiddleware } from './middlewares/webpack';
+import { injectWebpack } from './middlewares/webpack';
 
 (async () => {
 	const app = await NestFactory.create(ApplicationModule);
 	app.use(morgan('dev', { stream: new LogStream() }));
+
 	if (process.env.NODE_ENV === 'development') {
-		app.use(webpackMiddleware());
-		app.use(webpackHotMiddlware());
+		injectWebpack(app);
+	} else {
+		const root = join(__dirname, '../ui');
+		app.useStaticAssets(root);
+		app.use(fallback('index.html', { root }));
 	}
-	const root = join(__dirname, '../ui');
-	app.useStaticAssets(root);
-	app.use(fallback('index.html', { root }));
+
 	app.listen(3000);
 })();
