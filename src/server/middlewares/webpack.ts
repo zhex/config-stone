@@ -15,7 +15,8 @@ export const injectWebpack = app => {
 		) {
 			const fs = compiler.outputFileSystem;
 			const content = fs.readFileSync(config.output.path + '/index.html');
-			res.write(content).end();
+			res.set('Content-Type', 'text/html');
+			return res.send(content);
 		} else {
 			next();
 		}
