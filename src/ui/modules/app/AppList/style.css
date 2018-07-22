@@ -1,0 +1,10 @@
+.layout {
+  padding: 20px 50px;
+}
+
+.inner {
+  background: #fff;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}

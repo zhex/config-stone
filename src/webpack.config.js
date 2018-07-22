@@ -11,14 +11,14 @@ module.exports = {
 	devtool: 'cheap-sourcemap',
 	entry: {
 		vendor: [
+			'antd',
 			'react',
 			'react-dom',
-			'redux',
-			'redux-observable',
-			'react-redux',
 			'react-router-config',
 			'react-router-dom',
-			'rxjs',
+			'mobx',
+			'mobx-react',
+			'mobx-state-tree',
 		],
 		main: isDev
 			? [join(sourcePath, 'main.tsx'), 'webpack-hot-middleware/client']
@@ -43,19 +43,26 @@ module.exports = {
 				],
 			},
 			{
-				test: /\.css$/,
+				test: /antd\.css$/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 				]
 			},
 			{
-				test: /\.styl$/,
+				test: /\.css$/,
+				exclude: [
+					/antd\.css$/
+				],
 				use: [
 					MiniCssExtractPlugin.loader,
-					'css-loader',
-					'style-loader'
-				],
+					{
+						loader: 'css-loader',
+						options: {
+							modules: true,
+						},
+					}
+				]
 			},
 		],
 	},

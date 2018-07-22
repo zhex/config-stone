@@ -1,26 +1,29 @@
 import { Layout } from 'antd';
 import 'antd/dist/antd.css';
+import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
-import { Provider } from 'react-redux';
 import { renderRoutes, RouteConfig } from 'react-router-config';
 import { BrowserRouter } from 'react-router-dom';
-import { Store } from 'redux';
 import { AppHeader } from './AppHeader';
 
 export interface IAppProps {
-	store: Store;
+	store: any;
 	routes: RouteConfig[];
 }
 
-export const Application: React.SFC<IAppProps> = ({ store, routes }) => (
-	<Provider store={store}>
-		<BrowserRouter>
-			<Layout style={{minHeight: '100vh'}}>
-				<AppHeader />
-				{ renderRoutes(routes) }
-			</Layout>
-		</BrowserRouter>
-	</Provider>
+const s = { minHeight: '100vh' };
+
+export const Application: React.SFC<IAppProps> = observer(
+	({ store, routes }) => (
+		<Provider store={store}>
+			<BrowserRouter>
+				<Layout style={s}>
+					<AppHeader />
+					{renderRoutes(routes)}
+				</Layout>
+			</BrowserRouter>
+		</Provider>
+	),
 );
 
 Application.displayName = 'Application';
