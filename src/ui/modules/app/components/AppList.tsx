@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 export interface IAppListProps {
-	items: any[];
+	items: ReadonlyArray<any>;
 	loading?: boolean;
 }
 

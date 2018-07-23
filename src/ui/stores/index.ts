@@ -1,8 +1,11 @@
-import { types } from "mobx-state-tree";
-import { AppStore } from "./app";
+import { types } from 'mobx-state-tree';
+import { AppStore } from './app';
+import { ProfileStore } from './profile';
 
-export const Store = types.model({
+export const SiteStore = types.model({
 	apps: types.optional(AppStore, { data: {} }),
+	profiles: types.optional(ProfileStore, { data: {} }),
 });
 
-export const store = Store.create();
+export const store = SiteStore.create();
+(window as any).__store = store;

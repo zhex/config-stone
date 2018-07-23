@@ -3,15 +3,16 @@ import { applySnapshot, flow, types } from 'mobx-state-tree';
 import { api } from 'utils/api';
 import { array2map } from 'utils/helper';
 
-export const App = types.model('App', {
+export const Profile = types.model('Profile', {
 	id: types.maybe(types.identifierNumber),
 	name: types.maybe(types.string),
 	key: types.maybe(types.string),
+	appId: types.maybe(types.number),
 });
 
-export const AppStore = types
-	.model('AppStore', {
-		data: types.optional(types.map(App), {}),
+export const ProfileStore = types
+	.model('ProfileStore', {
+		data: types.optional(types.map(Profile), {}),
 		loading: false,
 	})
 	.views(self => ({
@@ -23,31 +24,29 @@ export const AppStore = types
 		}
 	}))
 	.actions(self => ({
-		fetch: flow(function*() {
+		fetch: flow(function*(appId: number) {
 			self.loading = true;
 			try {
-				const apps = yield api.get('/apps').then(result => result.data);
-				applySnapshot(self.data, array2map(apps, 'id'));
+				const profiles = yield api
+					.get(`/apps/${appId}/profiles`)
+					.then(result => result.data);
+				applySnapshot(self.data, array2map(profiles, 'id'));
 			} catch (err) {
 				// self.error = err;
 			}
 			self.loading = false;
 		}),
 
-		fetchById: flow(function*(id: number) {
+		fetchById: flow(function*(appId: number, id: number) {
 			self.loading = true;
 			try {
-				const app = yield api
-					.get(`/apps/${id}`)
+				const profile = yield api
+					.get(`/apps/${appId}/profiles/${id}`)
 					.then(result => result.data);
-				self.data.set(app.id, app);
+				self.data.set(profile.id, profile);
 			} catch (err) {
 				// todo
 			}
 			self.loading = false;
 		}),
-
-		save(data) {
-			self.data.set(data.id, data);
-		}
 	}));

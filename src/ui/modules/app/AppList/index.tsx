@@ -1,11 +1,12 @@
 import { Layout } from 'antd';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import { SiteStore } from 'stores';
 import { AppList as List } from '../components/AppList';
 import * as styles from './style.css';
 
 export interface IAppListProps {
-	store: any;
+	store: typeof SiteStore.Type;
 }
 
 @inject('store')
@@ -22,7 +23,7 @@ export default class AppList extends React.Component<IAppListProps> {
 				<div className={styles.inner}>
 					<h2>App list</h2>
 					<List
-						items={store.apps.data.values()}
+						items={store.apps.list}
 						loading={store.apps.loading}
 					/>
 				</div>
