@@ -2,8 +2,9 @@ import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import * as status from 'http-status';
 import * as yaml from 'js-yaml';
-import { includes, set } from 'lodash';
+import { includes } from 'lodash';
 import * as toml from 'toml-js';
+import { flat2nested, getExt, stripExt } from '../common/utils';
 import { EtcdService, IWatchMessage } from '../services/etcd.service';
 import { Events, NotifyService } from '../services/notify.service';
 
@@ -22,9 +23,9 @@ export class ConfigController {
 		@Res() res: Response,
 	) {
 		const supportExts = ['json', 'yml', 'yaml', 'properties', 'toml'];
-		const ext = this.getExt(profileKey);
+		const ext = getExt(profileKey);
 		if (ext && includes(supportExts, ext)) {
-			profileKey = this.stripExt(profileKey, ext);
+			profileKey = stripExt(profileKey);
 		}
 		if (version) {
 			const handler = (data: IWatchMessage) => {
@@ -65,37 +66,20 @@ export class ConfigController {
 		}
 	}
 
-	private getExt(profile: string) {
-		const idx = profile.lastIndexOf('.');
-		return idx > 0 ? profile.substr(idx + 1) : false;
-	}
-
-	private stripExt(profile: string, ext: string) {
-		return profile.replace(new RegExp(`\.${ext}$`), '');
-	}
-
 	private createFileData(config, ext: string) {
-		function createJSON() {
-			const data = {};
-			Object.keys(config).forEach(key => {
-				set(data, key, config[key]);
-			});
-			return data;
-		}
-
 		switch (ext) {
 			case 'properties':
 				return Object.keys(config)
 					.map(key => key + '=' + config[key])
 					.join('\n');
 			case 'toml':
-				return toml.dump(createJSON());
+				return toml.dump(flat2nested(config));
 			case 'yml':
 			case 'yaml':
-				return yaml.dump(createJSON());
+				return yaml.dump(flat2nested(config));
 			case 'json':
 			default:
-				return JSON.stringify(createJSON());
+				return JSON.stringify(flat2nested(config));
 		}
 	}
 }
