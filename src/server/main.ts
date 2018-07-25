@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import * as fallback from 'express-history-api-fallback';
 import * as morgan from 'morgan';
 import { join } from 'path';
 import { ApplicationModule } from './application.module';
+import { FallbackException } from './common/fallback-exception';
 import { LogStream } from './common/logger';
 import { injectWebpack } from './middlewares/webpack';
 
@@ -15,7 +15,7 @@ import { injectWebpack } from './middlewares/webpack';
 	} else {
 		const root = join(__dirname, '../ui');
 		app.useStaticAssets(root);
-		app.use(fallback('index.html', { root }));
+		app.useGlobalFilters(new FallbackException());
 	}
 
 	app.listen(3000);
