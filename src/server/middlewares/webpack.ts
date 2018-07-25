@@ -11,7 +11,8 @@ export const injectWebpack = app => {
 	app.use((req, res, next) => {
 		if (
 			(req.method === 'GET' || req.method === 'HEAD') &&
-			req.accepts('html')
+			req.accepts('html') &&
+			!req.url.match(/^\/api/)
 		) {
 			const fs = compiler.outputFileSystem;
 			const content = fs.readFileSync(config.output.path + '/index.html');

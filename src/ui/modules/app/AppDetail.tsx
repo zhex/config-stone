@@ -1,4 +1,15 @@
-import { Button, Col, Dropdown, Icon, Input, Menu, Radio, Row, Table } from 'antd';
+import {
+	Button,
+	Col,
+	Dropdown,
+	Icon,
+	Input,
+	List,
+	Menu,
+	Radio,
+	Row,
+	Table,
+} from 'antd';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -15,6 +26,8 @@ export interface IAppDetailProps extends RouteComponentProps<any> {
 const menu = (
 	<Menu>
 		<Menu.Item key="1">History</Menu.Item>
+		<Menu.Item key="1">Import</Menu.Item>
+		<Menu.Item key="1">Download</Menu.Item>
 		<Menu.Item key="2">Delete Profile</Menu.Item>
 	</Menu>
 );
@@ -41,14 +54,27 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 
 				<Row gutter={20}>
 					<Col span={6}>
-						<ContentPanel>
-							<h2>{this.app && this.app.name}</h2>
-						</ContentPanel>
+						{this.app && (
+							<ContentPanel>
+								<h2>{this.app.name}</h2>
+								<div>{this.app.key}</div>
+							</ContentPanel>
+						)}
 
 						<Panel>
-							{store.profiles.list.map(p => (
-								<div key={p.id}>{p.name}</div>
-							))}
+							<List
+								dataSource={store.profiles.list}
+								header={
+									<div style={{ padding: '0 20px' }}>
+										<strong>Profiles</strong>
+									</div>
+								}
+								renderItem={item => (
+									<List.Item style={{ padding: '10px 20px' }}>
+										{item.name}
+									</List.Item>
+								)}
+							/>
 						</Panel>
 					</Col>
 
@@ -58,20 +84,21 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 								style={{
 									display: 'flex',
 									justifyContent: 'space-between',
-									marginBottom: 15
+									marginBottom: 15,
 								}}
 							>
 								<h2>
-									Default <span>(key: default)</span>
+									Default{' '}
+									<span style={{ color: 'grey' }}>
+										(key: default)
+									</span>
 								</h2>
 								<Button.Group>
 									<Button>Release</Button>
-									<Button>Revert</Button>
+									<Button icon="rollback">Revert</Button>
 									<Button>Gray</Button>
 									<Dropdown overlay={menu}>
-										<Button>
-											<Icon type="menu-unfold" />
-										</Button>
+										<Button icon="ellipsis" />
 									</Dropdown>
 								</Button.Group>
 							</div>
@@ -80,13 +107,17 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 								style={{
 									display: 'flex',
 									justifyContent: 'space-between',
-									marginBottom: 15
+									marginBottom: 15,
 								}}
 							>
 								<div>
-									<Radio.Group value="1">
-										<Radio.Button value="1">L</Radio.Button>
-										<Radio.Button value="2">T</Radio.Button>
+									<Radio.Group buttonStyle="solid" value="1">
+										<Radio.Button value="1">
+											<Icon type="table" />
+										</Radio.Button>
+										<Radio.Button value="2">
+											<Icon type="file-text" />
+										</Radio.Button>
 									</Radio.Group>
 								</div>
 								<div>
@@ -94,21 +125,46 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 								</div>
 
 								<div>
-									<Button><Icon type="plus" />New</Button>
+									<Button
+										shape="circle"
+										type="primary"
+										icon="plus"
+									/>
 								</div>
 							</div>
 
-							<Table columns={[
-								{ title: 'Key', dataIndex: 'key' },
-								{ title: 'Value', dataIndex: 'value' },
-								{ title: 'Comment', dataIndex: 'comment' },
-								{ title: 'Actions'},
-							]} dataSource={[
-								{ key: 'mysql.port', value: '3000', comment: 'mysql port'},
-								{ key: 'mysql.host', value: '11.20.30.4', comment: 'mysql host name'},
-								{ key: 'mysql.username', value: 'root', comment: 'mysql username'},
-								{ key: 'mysql.password', value: 'root', comment: 'mysql password'},
-							]} bordered pagination={false} />
+							<Table
+								columns={[
+									{ title: 'Key', dataIndex: 'key' },
+									{ title: 'Value', dataIndex: 'value' },
+									{ title: 'Comment', dataIndex: 'comment' },
+									{ title: 'Actions' },
+								]}
+								dataSource={[
+									{
+										key: 'mysql.port',
+										value: '3000',
+										comment: 'mysql port',
+									},
+									{
+										key: 'mysql.host',
+										value: '11.20.30.4',
+										comment: 'mysql host name',
+									},
+									{
+										key: 'mysql.username',
+										value: 'root',
+										comment: 'mysql username',
+									},
+									{
+										key: 'mysql.password',
+										value: 'root',
+										comment: 'mysql password',
+									},
+								]}
+								bordered
+								pagination={false}
+							/>
 						</ContentPanel>
 					</Col>
 				</Row>
