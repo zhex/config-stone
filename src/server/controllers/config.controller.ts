@@ -10,6 +10,8 @@ import { Events, NotifyService } from '../services/notify.service';
 
 @Controller('api')
 export class ConfigController {
+	private supportExts = ['json', 'yml', 'yaml', 'properties', 'toml'];
+
 	constructor(
 		private readonly etcdService: EtcdService,
 		private readonly notifyService: NotifyService,
@@ -22,12 +24,35 @@ export class ConfigController {
 		@Param('profileKey') profileKey: string,
 		@Res() res: Response,
 	) {
-		const supportExts = ['json', 'yml', 'yaml', 'properties', 'toml'];
 		const ext = getExt(profileKey);
-		if (ext && includes(supportExts, ext)) {
+		if (ext && includes(this.supportExts, ext)) {
 			profileKey = stripExt(profileKey);
 		}
-		if (version) {
+		const config = await this.etcdService.getConfig(appKey, profileKey);
+
+		if (!config) {
+			return res.status(status.NOT_FOUND).json({
+				status: status.NOT_FOUND,
+				message: 'profile is not found',
+			});
+		}
+
+		if (ext) {
+			// if with extension, download the file
+			const data = this.createFileData(config.config, ext);
+			res.setHeader(
+				'Content-Disposition',
+				`form-data; name="fieldName"; filename=${appKey}-${profileKey}.${ext}`,
+			);
+			res.write(data);
+			res.end();
+		} else if (version) {
+			// immidiately return if version is newer
+			if(config.version > version) {
+				return res.json(config);
+			}
+
+			// hang the connection and waiting for the changes
 			const handler = (data: IWatchMessage) => {
 				if (
 					data.version > version &&
@@ -46,23 +71,8 @@ export class ConfigController {
 
 			this.notifyService.once(Events.configUpdate, handler);
 		} else {
-			const config = await this.etcdService.getConfig(appKey, profileKey);
-			if (!config) {
-				res.status(status.NOT_FOUND).json({
-					status: status.NOT_FOUND,
-					message: 'profile is not found',
-				});
-			} else if (ext) {
-				const data = this.createFileData(config.config, ext);
-				res.setHeader(
-					'Content-Disposition',
-					`form-data; name="fieldName"; filename=${appKey}-${profileKey}.${ext}`,
-				);
-				res.write(data);
-				res.end();
-			} else {
-				res.json(config);
-			}
+			// normal return
+			res.json(config);
 		}
 	}
 
