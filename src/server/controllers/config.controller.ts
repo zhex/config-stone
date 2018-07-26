@@ -17,7 +17,7 @@ export class ConfigController {
 
 	@Get(':appKey/:profileKey')
 	public async profile(
-		@Query('ver') version: string,
+		@Query('ver') version: number,
 		@Param('appKey') appKey: string,
 		@Param('profileKey') profileKey: string,
 		@Res() res: Response,

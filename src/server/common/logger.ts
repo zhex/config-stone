@@ -15,8 +15,8 @@ function replaceErrors(key, value) {
 
 const style = format.printf(info => {
 	let msg = info.message;
-	if (info.stack) {
-		msg += `\n${info.stack}`;
+	if (info.error) {
+		msg = `${info.error.stack}`;
 	}
 	return `[App] ${process.pid}\t- ${info.timestamp}\t${info.level}: ${msg}`;
 });

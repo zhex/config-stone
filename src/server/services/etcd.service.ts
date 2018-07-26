@@ -6,7 +6,7 @@ export interface IWatchMessage {
 	appKey: string;
 	profileKey: string;
 	config: any;
-	version: string;
+	version: number;
 }
 
 @Injectable()
@@ -33,7 +33,7 @@ export class EtcdService {
 			return {
 				appKey,
 				profileKey,
-				version: res.kvs[0].version,
+				version: Number(res.kvs[0].version),
 				config: JSON.parse(res.kvs[0].value.toString()),
 			};
 		});
@@ -59,7 +59,7 @@ export class EtcdService {
 			this.notifyService.emit(Events.configUpdate, {
 				appKey,
 				profileKey,
-				version: res.version,
+				version: Number(res.version),
 				config: JSON.parse(val),
 			});
 		});
