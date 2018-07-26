@@ -1,15 +1,18 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Delete,
 	Get,
 	HttpCode,
-	HttpException,
 	Param,
 	Post,
 	Put,
+	ValidationPipe,
 } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import * as status from 'http-status';
+import { ProfileDTO } from '../../dto/profile.dto';
 import { Profile } from '../../entities/profile.entity';
 import { AppService } from '../../services/app.service';
 import { ProfileService } from '../../services/profile.service';
@@ -35,14 +38,17 @@ export class ProfileController {
 	@HttpCode(status.CREATED)
 	public async create(
 		@Param('appId') appId: number,
-		@Body() data: Partial<Profile>,
+		@Body(new ValidationPipe())
+		data: ProfileDTO,
 	) {
 		const app = await this.appService.get(appId);
 		if (!app) {
-			throw new HttpException('invalid app id', status.BAD_REQUEST);
+			throw new BadRequestException('invalid app id');
 		}
-		data.appId = app.id;
-		await this.profileService.create(data);
+		const profile = plainToClass(Profile, data);
+		profile.appId = appId;
+		await this.profileService.create(profile);
+
 		return null;
 	}
 
@@ -50,9 +56,13 @@ export class ProfileController {
 	@HttpCode(status.NO_CONTENT)
 	public async update(
 		@Param('id') id: number,
-		@Body() data: Partial<Profile>,
+		@Body(new ValidationPipe()) data: Partial<ProfileDTO>,
 	) {
-		await this.profileService.update(id, data);
+		const profile = await this.get(id);
+		if (!profile) {
+			throw new BadRequestException('invalid profile id');
+		}
+		await this.profileService.update(profile, data);
 		return null;
 	}
 

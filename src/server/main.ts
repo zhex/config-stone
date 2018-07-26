@@ -11,7 +11,7 @@ import { injectWebpack } from './middlewares/webpack';
 	app.use(morgan('dev', { stream: new LogStream() }));
 
 	if (process.env.NODE_ENV === 'development') {
-		injectWebpack(app);
+		// injectWebpack(app);
 	} else {
 		const root = join(__dirname, '../ui');
 		app.useStaticAssets(root);

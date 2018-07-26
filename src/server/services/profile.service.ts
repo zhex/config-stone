@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ProfileDTO } from '../dto/profile.dto';
 import { Profile } from '../entities/profile.entity';
 import { EtcdService } from './etcd.service';
 import { ItemService } from './item.service';
@@ -22,12 +23,11 @@ export class ProfileService {
 		return this.profileRepo.findOne(id, { relations: ['items'] });
 	}
 
-	public async create(data: Partial<Profile>) {
+	public async create(data: Profile) {
 		return this.profileRepo.save(data);
 	}
 
-	public async update(id: number, data: Partial<Profile>) {
-		let profile = await this.get(id);
+	public async update(profile: Profile, data: Partial<ProfileDTO>) {
 		profile = this.profileRepo.merge(profile, data);
 		return this.profileRepo.save(profile);
 	}
@@ -39,7 +39,7 @@ export class ProfileService {
 	public async release(id: number) {
 		const profile = await this.profileRepo.findOne(id, {
 			relations: ['app'],
-		})
+		});
 		const items = await this.itemService.all(id);
 		const val = items.reduce((colleciton, item) => {
 			colleciton[item.key] = item.value;

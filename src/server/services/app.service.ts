@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getManager, Repository } from 'typeorm';
+import { AppDTO } from '../dto/app.dto';
 import { App } from '../entities/app.entity';
 import { Profile } from '../entities/profile.entity';
 
@@ -18,7 +19,7 @@ export class AppService {
 		return this.appRepo.findOne(id);
 	}
 
-	public async create(data: Partial<App>): Promise<App> {
+	public async create(data: AppDTO): Promise<App> {
 		let app;
 		await getManager().transaction(async t => {
 			app = await t.save(App, data);
@@ -31,8 +32,7 @@ export class AppService {
 		return app;
 	}
 
-	public async update(id: number, data: Partial<App>) {
-		let app = await this.get(id);
+	public async update(app: App, data: Partial<AppDTO>) {
 		app = this.appRepo.merge(app, data);
 		return this.appRepo.save(app);
 	}

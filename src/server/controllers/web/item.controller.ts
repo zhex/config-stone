@@ -1,15 +1,18 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Delete,
 	Get,
 	HttpCode,
-	HttpException,
 	Param,
 	Post,
 	Put,
+	ValidationPipe,
 } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import * as status from 'http-status';
+import { ItemDTO } from '../../dto/item.dto';
 import { Item } from '../../entities/item.entity';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
@@ -22,9 +25,7 @@ export class ItemController {
 	) {}
 
 	@Get()
-	public async all(
-		@Param('profileId') profileId: number,
-	) {
+	public async all(@Param('profileId') profileId: number) {
 		return this.itemService.all(profileId);
 	}
 
@@ -37,27 +38,43 @@ export class ItemController {
 	@HttpCode(status.CREATED)
 	public async create(
 		@Param('profileId') profileId: number,
-		@Body() data: Array<Partial<Item>>,
+		@Body(new ValidationPipe())
+		data: ItemDTO,
 	) {
 		const profile = await this.profileService.get(profileId);
 		if (!profile) {
-			throw new HttpException('invalid profile key', status.BAD_REQUEST);
+			throw new BadRequestException('invalid profile key');
 		}
-		data.forEach((d, idx) => {
-			d.profileId = profile.id;
-			d.order = idx + 1;
-		});
-		await this.itemService.create(data);
+
+		const entity = await this.itemService.findByProfileIdAndKey(
+			profileId,
+			data.key,
+		);
+
+		if (entity) {
+			throw new BadRequestException(`key "${data.key}" is already exist`);
+		}
+
+		const item = plainToClass(Item, data);
+		item.profileId = profileId;
+		await this.itemService.create(item);
+
 		return null;
 	}
 
-	@Put()
+	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
 	public async update(
-		@Param('profileId') profileId: string,
-		@Body() data: Array<Partial<Item>>,
+		@Param('id') id: number,
+		@Body(new ValidationPipe())
+		data: Partial<ItemDTO>,
 	) {
-		await this.itemService.update(Number(profileId), data);
+		const item = await this.itemService.get(id);
+		if (!item) {
+			throw new BadRequestException('invalid param: item id');
+		}
+		await this.itemService.update(item, data);
+
 		return null;
 	}
 
