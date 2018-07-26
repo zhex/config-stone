@@ -21,11 +21,19 @@ export class ItemService {
 		return this.itemRepo.save(data);
 	}
 
-	public async update(id: number, data: Array<Partial<Item>>) {
+	public async update(profileId: number, data: Array<Partial<Item>>) {
 		const items = await Promise.all(
-			data.map(d => this.itemRepo.preload(d)),
+			data.map(async d => {
+				if (d.id) {
+					delete d.profileId;
+					d = await this.itemRepo.preload(d);
+					return d.profileId === profileId ? d : null;
+				}
+				d.profileId = profileId;
+				return Promise.resolve(d);
+			}),
 		);
-		return this.itemRepo.save(items);
+		return this.itemRepo.save(items.filter(d => d !== null));
 	}
 
 	public async del(id: number) {

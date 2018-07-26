@@ -18,19 +18,19 @@ import { ProfileService } from '../../services/profile.service';
 export class ItemController {
 	constructor(
 		private readonly profileService: ProfileService,
-		private readonly itemservice: ItemService,
+		private readonly itemService: ItemService,
 	) {}
 
 	@Get()
 	public async all(
 		@Param('profileId') profileId: number,
 	) {
-		return this.itemservice.all(profileId);
+		return this.itemService.all(profileId);
 	}
 
 	@Get(':id')
 	public async get(@Param('id') id: number) {
-		return this.itemservice.get(id);
+		return this.itemService.get(id);
 	}
 
 	@Post()
@@ -47,24 +47,24 @@ export class ItemController {
 			d.profileId = profile.id;
 			d.order = idx + 1;
 		});
-		await this.itemservice.create(data);
+		await this.itemService.create(data);
 		return null;
 	}
 
-	@Put(':id')
+	@Put()
 	@HttpCode(status.NO_CONTENT)
 	public async update(
-		@Param('id') id: number,
+		@Param('profileId') profileId: string,
 		@Body() data: Array<Partial<Item>>,
 	) {
-		await this.itemservice.update(id, data);
+		await this.itemService.update(Number(profileId), data);
 		return null;
 	}
 
 	@Delete(':id')
 	@HttpCode(status.NO_CONTENT)
 	public async delete(@Param('id') id: number) {
-		await this.itemservice.del(id);
+		await this.itemService.del(id);
 		return null;
 	}
 }
