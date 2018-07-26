@@ -41,7 +41,7 @@ export class ConfigController {
 
 			const timer = setTimeout(() => {
 				this.notifyService.removeListener(Events.configUpdate, handler);
-				res.status(status.NO_CONTENT).end();
+				res.status(status.NOT_MODIFIED).end();
 			}, 15 * 1000);
 
 			this.notifyService.once(Events.configUpdate, handler);
