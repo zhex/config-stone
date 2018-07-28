@@ -7,6 +7,8 @@ export const Item = types.model('Item', {
 	id: types.maybe(types.identifierNumber),
 	key: types.maybe(types.string),
 	value: types.maybe(types.string),
+	comment: types.union(types.string, types.null),
+	order: types.maybe(types.number),
 	profileId: types.maybe(types.number),
 });
 
@@ -19,8 +21,19 @@ export const ItemStore = types
 		get(id: number) {
 			return self.data.get(id + '');
 		},
+
 		get list() {
 			return values(self.data);
+		},
+
+		get nextOrder() {
+			let n = 0;
+			for (const item of values(self.data)) {
+				if (item.order > n) {
+					n = item.order;
+				}
+			}
+			return n+1;
 		}
 	}))
 	.actions(self => ({
@@ -51,6 +64,12 @@ export const ItemStore = types
 		}),
 
 		create: flow(function* (appId: number, profileId: number, data) {
+			data.order = self.nextOrder;
 			yield api.post(`/apps/${appId}/profiles/${profileId}/items`, data);
-		})
+		}),
+
+		delete: flow(function* (appId: number, profileId: number, id: number) {
+			yield api.delete(`/apps/${appId}/profiles/${profileId}/items/${id}`);
+			self.data.delete(id.toString());
+		}),
 	}));

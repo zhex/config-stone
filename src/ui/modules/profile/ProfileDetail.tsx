@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu, Modal } from 'antd';
+import { Button, Dropdown, Menu, Modal, Table } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { ContentPanel } from 'modules/layout/components/Panel';
 import * as React from 'react';
@@ -6,7 +6,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { Filter } from './components/Filter';
 import { ItemCreateForm } from './components/ItemCreateForm';
-import { ItemTable } from './components/ItemTable';
 import { ViewSwitch } from './components/ViewSwitch';
 
 export interface IProfileDetailProps extends RouteComponentProps<any> {
@@ -28,6 +27,26 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	public state = {
 		itemModal: false,
 	};
+
+	private cols = [
+		{ title: 'Key', dataIndex: 'key' },
+		{ title: 'Value', dataIndex: 'value' },
+		{ title: 'Comment', dataIndex: 'comment' },
+		{
+			title: 'Actions',
+			render: (text, record) => (
+				<div>
+					<Button icon="edit" size="small" shape="circle" />
+					<Button
+						icon="close"
+						size="small"
+						shape="circle"
+						onClick={this.deleteItem.bind(null, record)}
+					/>
+				</div>
+			),
+		},
+	];
 
 	public get profile() {
 		const { store, match } = this.props;
@@ -108,7 +127,12 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					</div>
 				</div>
 
-				<ItemTable data={store.items.list} />
+				<Table
+					columns={this.cols}
+					dataSource={store.items.list as any}
+					bordered
+					pagination={false}
+				/>
 			</ContentPanel>
 		) : null;
 	}
@@ -120,11 +144,16 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	private createItem = (data, form) => {
 		const { store, match } = this.props;
 		const app = store.apps.get(match.params.appId);
-		data.order = store.items.list.length + 1;
 		store.items.create(app.id, this.profile.id, data).then(() => {
 			this.toggleItemModal();
 			form.resetFields();
 			store.items.fetch(app.id, this.profile.id);
 		});
+	};
+
+	private deleteItem = (item) => {
+		const { store, match } = this.props;
+		const app = store.apps.get(match.params.appId);
+		store.items.delete(app.id, this.profile.id, item.id);
 	};
 }

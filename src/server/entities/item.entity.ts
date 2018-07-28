@@ -10,7 +10,7 @@ export class Item extends Base {
 	@Column('longtext')
 	public value: string;
 
-	@Column('text')
+	@Column('text', { nullable: true })
 	public comment: string;
 
 	@Column('int')
