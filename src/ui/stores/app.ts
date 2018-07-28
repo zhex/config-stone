@@ -49,5 +49,9 @@ export const AppStore = types
 
 		save(data) {
 			self.data.set(data.id, data);
-		}
+		},
+
+		create: flow(function* (data) {
+			yield api.post('/apps', data);
+		})
 	}));

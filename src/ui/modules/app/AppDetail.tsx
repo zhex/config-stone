@@ -1,11 +1,13 @@
-import { Col, List, Row } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { renderRoutes, RouteConfig } from 'react-router-config';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { ContentLayout } from '../layout/components/ContentLayout';
-import { ContentPanel, Panel } from '../layout/components/Panel';
+import { ContentPanel } from '../layout/components/Panel';
+import { ProfileList } from '../profile/components/ProfileList';
+import { AppPanel } from './components/AppPanel';
 
 const BackLink = observer(Link);
 
@@ -29,42 +31,31 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 	}
 
 	public render() {
-		const { store, route } = this.props;
-		return (
+		const { store, route, location } = this.props;
+		return this.app ? (
 			<ContentLayout>
 				<BackLink to="/">&lt; Back</BackLink>
+				{this.app && (
+					<Row gutter={20}>
+						<Col span={6}>
+							<AppPanel app={this.app} />
+							<ProfileList list={store.profiles.list} />
+						</Col>
 
-				<Row gutter={20}>
-					<Col span={6}>
-						{this.app && (
-							<ContentPanel>
-								<h2>{this.app.name}</h2>
-								<div>{this.app.key}</div>
-							</ContentPanel>
-						)}
-
-						<Panel>
-							<List
-								dataSource={store.profiles.list}
-								header={
-									<div style={{ padding: '0 20px' }}>
-										<strong>Profiles</strong>
-									</div>
-								}
-								renderItem={item => (
-									<List.Item style={{ padding: '10px 20px' }}>
-										{item.name}
-									</List.Item>
-								)}
-							/>
-						</Panel>
-					</Col>
-
-					<Col span={18}>
-						{renderRoutes(route.routes)}
-					</Col>
-				</Row>
+						<Col span={18}>
+							{/* {location.pathname === `/apps/${this.app.id}` &&
+								store.profiles.first && (
+									<Redirect
+										to={`/apps/${this.app.id}/profiles/${
+											store.profiles.first.id
+										}`}
+									/>
+								)} */}
+							{renderRoutes(route.routes)}
+						</Col>
+					</Row>
+				)}
 			</ContentLayout>
-		);
+		) : <Spin />;
 	}
 }

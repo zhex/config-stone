@@ -21,6 +21,9 @@ export const ProfileStore = types
 		},
 		get list() {
 			return values(self.data);
+		},
+		get first(): typeof Profile.Type {
+			return values(self.data)[0];
 		}
 	}))
 	.actions(self => ({

@@ -1,9 +1,10 @@
-import { Button, Dropdown, Icon, Input, Menu, Radio } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { ContentPanel } from 'modules/layout/components/Panel';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
+import { Filter } from './components/Filter';
 import { ItemTable } from './components/ItemTable';
 import { ViewSwitch } from './components/ViewSwitch';
 
@@ -14,27 +15,23 @@ export interface IProfileDetailProps extends RouteComponentProps<any> {
 const menu = (
 	<Menu>
 		<Menu.Item key="1">History</Menu.Item>
-		<Menu.Item key="1">Import</Menu.Item>
-		<Menu.Item key="1">Download</Menu.Item>
-		<Menu.Item key="2">Delete Profile</Menu.Item>
+		<Menu.Item key="2">Import</Menu.Item>
+		<Menu.Item key="3">Download</Menu.Item>
+		<Menu.Item key="4">Delete Profile</Menu.Item>
 	</Menu>
 );
 
 @inject('store')
 @observer
 export class ProfileDetail extends React.Component<IProfileDetailProps> {
-	private get inject() {
-		return this.props as IProfileDetailProps;
-	}
-
 	public componentDidMount() {
-		const { store, match } = this.inject;
+		const { store, match } = this.props;
 		const { appId, profileId } = match.params;
 		store.items.fetch(appId, profileId);
 	}
 
 	public render() {
-		const { store } = this.inject;
+		const { store } = this.props;
 
 		return (
 			<ContentPanel>
@@ -50,7 +47,7 @@ export class ProfileDetail extends React.Component<IProfileDetailProps> {
 						<span style={{ color: 'grey' }}>(key: default)</span>
 					</h2>
 					<Button.Group>
-						<Button>Release</Button>
+						<Button icon="play-circle-o">Release</Button>
 						<Button icon="rollback">Revert</Button>
 						<Button>Gray</Button>
 						<Dropdown overlay={menu}>
@@ -70,7 +67,7 @@ export class ProfileDetail extends React.Component<IProfileDetailProps> {
 						<ViewSwitch />
 					</div>
 					<div>
-						<Input.Search placeholder="Filter ..." />
+						<Filter />
 					</div>
 
 					<div>
