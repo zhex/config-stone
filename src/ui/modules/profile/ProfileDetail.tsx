@@ -1,10 +1,11 @@
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Menu, Modal } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { ContentPanel } from 'modules/layout/components/Panel';
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { Filter } from './components/Filter';
+import { ItemCreateForm } from './components/ItemCreateForm';
 import { ItemTable } from './components/ItemTable';
 import { ViewSwitch } from './components/ViewSwitch';
 
@@ -24,6 +25,10 @@ const menu = (
 @inject('store')
 @observer
 export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
+	public state = {
+		itemModal: false,
+	};
+
 	public get profile() {
 		const { store, match } = this.props;
 		return store.profiles.get(match.params.profileId);
@@ -86,7 +91,20 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					</div>
 
 					<div>
-						<Button shape="circle" type="primary" icon="plus" />
+						<Button
+							shape="circle"
+							type="primary"
+							icon="plus"
+							onClick={this.toggleItemModal}
+						/>
+						<Modal
+							title="Create New Item"
+							visible={this.state.itemModal}
+							onCancel={this.toggleItemModal}
+							footer={null}
+						>
+							<ItemCreateForm handleSumbit={this.createItem} />
+						</Modal>
 					</div>
 				</div>
 
@@ -94,4 +112,19 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 			</ContentPanel>
 		) : null;
 	}
+
+	private toggleItemModal = () => {
+		this.setState({ itemModal: !this.state.itemModal });
+	};
+
+	private createItem = (data, form) => {
+		const { store, match } = this.props;
+		const app = store.apps.get(match.params.appId);
+		data.order = store.items.list.length + 1;
+		store.items.create(app.id, this.profile.id, data).then(() => {
+			this.toggleItemModal();
+			form.resetFields();
+			store.items.fetch(app.id, this.profile.id);
+		});
+	};
 }

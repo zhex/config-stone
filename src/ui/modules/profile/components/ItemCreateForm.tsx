@@ -14,18 +14,22 @@ class CreateForm extends React.Component<ICreateFormProps> {
 		const { form } = this.props;
 		return (
 			<Form onSubmit={this.onSubmit}>
-				<Form.Item label="Profile Name">
-					{form.getFieldDecorator('name', {
+				<Form.Item label="Key">
+					{form.getFieldDecorator('key', {
 						rules: [
-							{ required: true, message: 'Name is required' },
+							{ required: true, message: 'Key is required' },
 						],
 					})(<InputBox />)}
 				</Form.Item>
 
-				<Form.Item label="Key">
-					{form.getFieldDecorator('key', {
-						rules: [{ required: true, message: 'Key is required' }],
+				<Form.Item label="Value">
+					{form.getFieldDecorator('value', {
+						rules: [{ required: true, message: 'Value is required' }],
 					})(<InputBox />)}
+				</Form.Item>
+
+				<Form.Item label="Comment">
+					{form.getFieldDecorator('comment')(<InputBox.TextArea />)}
 				</Form.Item>
 
 				<Form.Item>
@@ -41,11 +45,11 @@ class CreateForm extends React.Component<ICreateFormProps> {
 		e.preventDefault();
 		const { form, handleSumbit } = this.props;
 		form.validateFields((err, values) => {
-			if (typeof handleSumbit === 'function') {
+			if (!err && typeof handleSumbit === 'function') {
 				handleSumbit(values, form);
 			}
 		});
 	};
 }
 
-export const ProfileCreateForm = Form.create()(observer(CreateForm));
+export const ItemCreateForm = Form.create()(observer(CreateForm));

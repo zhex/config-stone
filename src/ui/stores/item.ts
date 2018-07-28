@@ -49,4 +49,8 @@ export const ItemStore = types
 			}
 			self.loading = false;
 		}),
+
+		create: flow(function* (appId: number, profileId: number, data) {
+			yield api.post(`/apps/${appId}/profiles/${profileId}/items`, data);
+		})
 	}));

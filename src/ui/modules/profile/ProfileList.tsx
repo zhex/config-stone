@@ -4,7 +4,7 @@ import { Panel } from 'modules/layout/components/Panel';
 import * as React from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { SiteStore } from 'stores';
-import { ProfileCreateForm } from './components/CreateForm';
+import { ProfileCreateForm } from './components/ProfileCreateForm';
 
 const Header = observer(({ onAdd }) => (
 	<div

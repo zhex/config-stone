@@ -14,7 +14,7 @@ class CreateForm extends React.Component<ICreateFormProps> {
 		const { form } = this.props;
 		return (
 			<Form onSubmit={this.onSubmit}>
-				<Form.Item label="Project Name">
+				<Form.Item label="Profile Name">
 					{form.getFieldDecorator('name', {
 						rules: [
 							{ required: true, message: 'Name is required' },
@@ -48,4 +48,4 @@ class CreateForm extends React.Component<ICreateFormProps> {
 	};
 }
 
-export const AppCreateForm = Form.create()(observer(CreateForm));
+export const ProfileCreateForm = Form.create()(observer(CreateForm));

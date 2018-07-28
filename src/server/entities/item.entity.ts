@@ -10,6 +10,9 @@ export class Item extends Base {
 	@Column('longtext')
 	public value: string;
 
+	@Column('text')
+	public comment: string;
+
 	@Column('int')
 	public order: number;
 
