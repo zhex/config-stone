@@ -52,4 +52,8 @@ export const ProfileStore = types
 			}
 			self.loading = false;
 		}),
+
+		create: flow(function* (appId: number, data) {
+			yield api.post(`/apps/${appId}/profiles`, data);
+		})
 	}));

@@ -23,17 +23,30 @@ const menu = (
 
 @inject('store')
 @observer
-export class ProfileDetail extends React.Component<IProfileDetailProps> {
+export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
+	public get profile() {
+		const { store, match } = this.props;
+		return store.profiles.get(match.params.profileId);
+	}
+
 	public componentDidMount() {
 		const { store, match } = this.props;
 		const { appId, profileId } = match.params;
 		store.items.fetch(appId, profileId);
 	}
 
+	public componentWillReceiveProps(nextProps) {
+		const { store, match } = nextProps;
+		const { appId, profileId } = match.params;
+		if (profileId !== this.props.match.params.profileId) {
+			store.items.fetch(appId, profileId);
+		}
+	}
+
 	public render() {
 		const { store } = this.props;
 
-		return (
+		return this.profile ? (
 			<ContentPanel>
 				<div
 					style={{
@@ -43,8 +56,10 @@ export class ProfileDetail extends React.Component<IProfileDetailProps> {
 					}}
 				>
 					<h2>
-						Default{' '}
-						<span style={{ color: 'grey' }}>(key: default)</span>
+						{this.profile.name}{' '}
+						<span style={{ color: 'grey' }}>
+							(key: {this.profile.key})
+						</span>
 					</h2>
 					<Button.Group>
 						<Button icon="play-circle-o">Release</Button>
@@ -77,6 +92,6 @@ export class ProfileDetail extends React.Component<IProfileDetailProps> {
 
 				<ItemTable data={store.items.list} />
 			</ContentPanel>
-		);
+		) : null;
 	}
 }

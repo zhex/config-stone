@@ -1,12 +1,11 @@
 import { Col, Row, Spin } from 'antd';
 import { inject, observer } from 'mobx-react';
+import { ProfileList } from 'modules/profile/ProfileList';
 import * as React from 'react';
 import { renderRoutes, RouteConfig } from 'react-router-config';
-import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { ContentLayout } from '../layout/components/ContentLayout';
-import { ContentPanel } from '../layout/components/Panel';
-import { ProfileList } from '../profile/components/ProfileList';
 import { AppPanel } from './components/AppPanel';
 
 const BackLink = observer(Link);
@@ -27,7 +26,6 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 	public componentDidMount() {
 		const { match, store } = this.props;
 		store.apps.fetchById(match.params.appId);
-		store.profiles.fetch(match.params.appId);
 	}
 
 	public render() {
@@ -39,7 +37,7 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 					<Row gutter={20}>
 						<Col span={6}>
 							<AppPanel app={this.app} />
-							<ProfileList list={store.profiles.list} />
+							<ProfileList />
 						</Col>
 
 						<Col span={18}>
@@ -56,6 +54,8 @@ export class AppDetail extends React.Component<IAppDetailProps> {
 					</Row>
 				)}
 			</ContentLayout>
-		) : <Spin />;
+		) : (
+			<Spin />
+		);
 	}
 }
