@@ -24,9 +24,9 @@ export class AppController {
 		return apps;
 	}
 
-	@Get(':id')
-	public async get(@Param('id') id: number) {
-		return this.appService.get(id);
+	@Get(':key')
+	public async get(@Param('id') key: string) {
+		return this.appService.get(key);
 	}
 
 	@Post()
@@ -39,25 +39,25 @@ export class AppController {
 		return null;
 	}
 
-	@Put(':id')
+	@Put(':key')
 	@HttpCode(status.NO_CONTENT)
 	public async update(
-		@Param('id') id: number,
+		@Param('key') key: string,
 		@Body(new ValidationPipe())
 		data: Partial<AppDTO>,
 	) {
-		const app = await this.get(id);
+		const app = await this.appService.get(key);
 		if (!app) {
-			throw new BadRequestException('invalid app id');
+			throw new BadRequestException('invalid app key');
 		}
 		await this.appService.update(app, data);
 		return null;
 	}
 
-	@Delete(':id')
+	@Delete(':key')
 	@HttpCode(status.NO_CONTENT)
-	public async delete(@Param('id') id: number) {
-		await this.appService.del(id);
+	public async delete(@Param('key') key: string) {
+		await this.appService.del(key);
 		return null;
 	}
 }

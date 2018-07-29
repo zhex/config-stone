@@ -15,8 +15,8 @@ export class AppService {
 		return this.appRepo.find();
 	}
 
-	public get(id: number) {
-		return this.appRepo.findOne(id);
+	public get(key: string) {
+		return this.appRepo.findOne({ where: { key } });
 	}
 
 	public async create(data: AppDTO): Promise<App> {
@@ -26,7 +26,7 @@ export class AppService {
 			await t.insert(Profile, {
 				name: 'Default',
 				key: 'default',
-				appId: app.id,
+				appKey: app.key,
 			});
 		});
 		return app;
@@ -37,7 +37,7 @@ export class AppService {
 		return this.appRepo.save(app);
 	}
 
-	public async del(id: number) {
-		return this.appRepo.delete(id);
+	public async del(key: string) {
+		return this.appRepo.delete({ key });
 	}
 }

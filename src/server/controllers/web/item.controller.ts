@@ -25,38 +25,44 @@ export class ItemController {
 	) {}
 
 	@Get()
-	public async all(@Param('profileId') profileId: number) {
-		return this.itemService.all(profileId);
+	public async all(
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
+	) {
+		return this.itemService.all(appKey, profileKey);
 	}
 
 	@Get(':id')
-	public async get(@Param('id') id: number) {
-		return this.itemService.get(id);
+	public async get(
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
+		@Param('key') key: string,
+	) {
+		return this.itemService.get(appKey, profileKey, key);
 	}
 
 	@Post()
 	@HttpCode(status.CREATED)
 	public async create(
-		@Param('profileId') profileId: number,
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
 		@Body(new ValidationPipe())
 		data: ItemDTO,
 	) {
-		const profile = await this.profileService.get(profileId);
+		const profile = await this.profileService.get(appKey, profileKey);
 		if (!profile) {
 			throw new BadRequestException('invalid profile key');
 		}
 
-		const entity = await this.itemService.findByProfileIdAndKey(
-			profileId,
-			data.key,
-		);
+		const entity = await this.itemService.get(appKey, profileKey, data.key);
 
 		if (entity) {
 			throw new BadRequestException(`key "${data.key}" is already exist`);
 		}
 
 		const item = plainToClass(Item, data);
-		item.profileId = profileId;
+		item.appKey = appKey;
+		item.profileKey = profileKey;
 		await this.itemService.create(item);
 
 		return null;
@@ -65,13 +71,15 @@ export class ItemController {
 	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
 	public async update(
-		@Param('id') id: number,
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
+		@Param('key') key: string,
 		@Body(new ValidationPipe())
 		data: Partial<ItemDTO>,
 	) {
-		const item = await this.itemService.get(id);
+		const item = await this.itemService.get(appKey, profileKey, key);
 		if (!item) {
-			throw new BadRequestException('invalid param: item id');
+			throw new BadRequestException('invalid param: item key');
 		}
 		await this.itemService.update(item, data);
 
@@ -80,8 +88,12 @@ export class ItemController {
 
 	@Delete(':id')
 	@HttpCode(status.NO_CONTENT)
-	public async delete(@Param('id') id: number) {
-		await this.itemService.del(id);
+	public async delete(
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
+		@Param('key') key: string,
+	) {
+		await this.itemService.del(appKey, profileKey, key);
 		return null;
 	}
 }

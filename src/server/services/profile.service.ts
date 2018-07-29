@@ -15,12 +15,12 @@ export class ProfileService {
 		private readonly etcdService: EtcdService,
 	) {}
 
-	public all(appId: number) {
-		return this.profileRepo.find({ where: { appId } });
+	public all(appKey: string) {
+		return this.profileRepo.find({ where: { appKey } });
 	}
 
-	public get(id: number) {
-		return this.profileRepo.findOne(id, { relations: ['items'] });
+	public get(appKey: string, key: string) {
+		return this.profileRepo.findOne({ where: { appKey, key } });
 	}
 
 	public async create(data: Profile) {
@@ -32,19 +32,16 @@ export class ProfileService {
 		return this.profileRepo.save(profile);
 	}
 
-	public async del(id: number) {
-		return this.profileRepo.delete(id);
+	public async del(appKey: string, key: string) {
+		return this.profileRepo.delete({ appKey, key });
 	}
 
-	public async release(id: number) {
-		const profile = await this.profileRepo.findOne(id, {
-			relations: ['app'],
-		});
-		const items = await this.itemService.all(id);
+	public async release(appKey: string, key: string) {
+		const items = await this.itemService.all(appKey, key);
 		const val = items.reduce((colleciton, item) => {
 			colleciton[item.key] = item.value;
 			return colleciton;
 		}, {});
-		await this.etcdService.setConfig(profile.app.key, profile.key, val);
+		await this.etcdService.setConfig(appKey, key, val);
 	}
 }

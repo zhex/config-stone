@@ -12,21 +12,12 @@ export class ItemService {
 		@InjectRepository(Item) private readonly itemRepo: Repository<Item>,
 	) {}
 
-	public all(profileId: number) {
-		return this.itemRepo.find({ where: { profileId } });
+	public all(appKey: string, profileKey: string) {
+		return this.itemRepo.find({ where: { appKey, profileKey } });
 	}
 
-	public get(id: number) {
-		return this.itemRepo.findOne(id);
-	}
-
-	public findByProfileIdAndKey(profileId: number, key: string) {
-		return this.itemRepo.findOne({
-			where: {
-				profileId,
-				key,
-			},
-		});
+	public get(appKey: string, profileKey: string, key: string) {
+		return this.itemRepo.findOne({ where: { appKey, profileKey, key } });
 	}
 
 	public async create(data: Item) {
@@ -38,19 +29,24 @@ export class ItemService {
 		return this.itemRepo.save(item);
 	}
 
-	public async updateSet(profileId: number, data: ItemSetDTO) {
+	public async updateSet(
+		appKey: string,
+		profileKey: string,
+		data: ItemSetDTO,
+	) {
 		return this.itemRepo.manager.transaction(async t => {
 			if (data.creates) {
 				for (const d of data.creates) {
 					const item = plainToClass(Item, d);
-					item.profileId = profileId;
+					item.appKey = appKey;
+					item.profileKey = profileKey;
 					await t.save(item);
 				}
 			}
 
 			if (data.updates) {
 				for (const d of data.updates) {
-					let item = await this.get(d.id);
+					let item = await this.get(appKey, profileKey, d.key);
 					item = this.itemRepo.merge(item, d);
 					await t.save(item);
 				}
@@ -58,17 +54,13 @@ export class ItemService {
 
 			if (data.deletes) {
 				for (const d of data.deletes) {
-					const item = await this.findByProfileIdAndKey(
-						profileId,
-						d.key,
-					);
-					await t.remove(item);
+					await t.remove({ appKey, profileKey, key: d.key });
 				}
 			}
 		});
 	}
 
-	public async del(id: number) {
-		return this.itemRepo.delete(id);
+	public async del(appKey: string, profileKey: string, key: string) {
+		return this.itemRepo.delete({ appKey, profileKey, key });
 	}
 }

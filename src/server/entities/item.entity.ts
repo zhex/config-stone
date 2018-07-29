@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
 import { Base } from './base.entity';
-import { Profile } from './profile.entity';
 
 @Entity('items')
+@Unique('app_profile_item_key', ['appKey', 'profileKey', 'key'])
 export class Item extends Base {
 	@Column('varchar')
 	public key: string;
@@ -16,10 +16,9 @@ export class Item extends Base {
 	@Column('int')
 	public order: number;
 
-	@Column('int', { name: 'profile_id' })
-	public profileId: number;
+	@Column('varchar')
+	public appKey: string;
 
-	@ManyToOne(() => Profile)
-	@JoinColumn({ name: 'profile_id' })
-	public profile?: Profile;
+	@Column('varchar')
+	public profileKey: string;
 }
