@@ -1,6 +1,7 @@
 const { join } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TSCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const webpack = require('webpack');
 
 const sourcePath = join(__dirname, 'ui');
@@ -38,6 +39,7 @@ module.exports = {
 						loader: 'ts-loader',
 						options: {
 							configFile: join(sourcePath, 'tsconfig.json'),
+							transpileOnly: true,
 						},
 					},
 				],
@@ -83,6 +85,10 @@ module.exports = {
 		},
 	},
 	plugins: [
+		new TSCheckerPlugin({
+			tsconfig: join(sourcePath, 'tsconfig.json'),
+			tslint: join(sourcePath, '../../tslint.json'),
+		}),
 		new HtmlWebpackPlugin({
 			title: 'Config Stone',
 			hash: true,
