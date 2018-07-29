@@ -53,23 +53,37 @@ export class ConfigController {
 			}
 
 			// hang the connection and waiting for the changes
-			const handler = (data: IWatchMessage) => {
+			const updateHandler = (data: IWatchMessage) => {
 				if (
 					data.version > version &&
 					data.appKey === appKey &&
 					data.profileKey === profileKey
 				) {
 					clearTimeout(timer);
+					this.notifyService.removeListener(Events.configDelete, deleteHandler);
 					res.json(data);
 				}
 			};
 
+			const deleteHandler = (data: IWatchMessage) => {
+				if (
+					data.appKey === appKey &&
+					data.profileKey === profileKey
+				) {
+					clearTimeout(timer);
+					this.notifyService.removeListener(Events.configUpdate, updateHandler);
+					res.status(status.NOT_FOUND).end();
+				}
+			};
+
 			const timer = setTimeout(() => {
-				this.notifyService.removeListener(Events.configUpdate, handler);
+				this.notifyService.removeListener(Events.configUpdate, updateHandler);
+				this.notifyService.removeListener(Events.configDelete, deleteHandler);
 				res.status(status.NOT_MODIFIED).end();
 			}, 15 * 1000);
 
-			this.notifyService.once(Events.configUpdate, handler);
+			this.notifyService.once(Events.configUpdate, updateHandler);
+			this.notifyService.once(Events.configDelete, deleteHandler);
 		} else {
 			// normal return
 			res.json(config);

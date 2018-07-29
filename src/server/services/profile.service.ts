@@ -33,7 +33,9 @@ export class ProfileService {
 	}
 
 	public async del(appKey: string, key: string) {
-		return this.profileRepo.delete({ appKey, key });
+		await this.profileRepo.delete({ appKey, key });
+		await this.etcdService.deleteConfig(appKey, key);
+		return true;
 	}
 
 	public async release(appKey: string, key: string) {

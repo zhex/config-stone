@@ -5,8 +5,8 @@ import { Events, NotifyService } from './notify.service';
 export interface IWatchMessage {
 	appKey: string;
 	profileKey: string;
-	config: any;
-	version: number;
+	config?: any;
+	version?: number;
 }
 
 @Injectable()
@@ -26,23 +26,34 @@ export class EtcdService {
 
 	public getConfig(appKey: string, profileKey: string) {
 		const key = this.getConfigKey(appKey, profileKey);
-		return this.client.get(key).exec().then(res => {
-			if (!res.kvs.length) {
-				return null;
-			}
-			let config;
-			try {
-				config = JSON.parse(res.kvs[0].value.toString());
-			} catch(err) {
-				config = res.kvs[0].value.toString();
-			}
-			return {
-				appKey,
-				profileKey,
-				version: Number(res.kvs[0].version),
-				config,
-			};
-		});
+		return this.client
+			.get(key)
+			.exec()
+			.then(res => {
+				if (!res.kvs.length) {
+					return null;
+				}
+				let config;
+				try {
+					config = JSON.parse(res.kvs[0].value.toString());
+				} catch (err) {
+					config = res.kvs[0].value.toString();
+				}
+				return {
+					appKey,
+					profileKey,
+					version: Number(res.kvs[0].version),
+					config,
+				};
+			});
+	}
+
+	public deleteConfig(appKey: string, profileKey: string) {
+		const key = this.getConfigKey(appKey, profileKey);
+		return this.client
+			.delete()
+			.key(key)
+			.exec();
 	}
 
 	public getConfigKey(appKey: string, profileKey: string) {
@@ -69,5 +80,20 @@ export class EtcdService {
 				config: JSON.parse(val),
 			});
 		});
+
+		watcher.on('delete', res => {
+			const key = res.key.toString();
+			const [prefix, appKey, profileKey] = key.split('/');
+			if (prefix !== this.prefix) {
+				return;
+			}
+
+			this.notifyService.emit(Events.configDelete, {
+				appKey,
+				profileKey,
+			});
+		});
+
+		return watcher;
 	}
 }
