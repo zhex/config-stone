@@ -24,7 +24,7 @@ export const ProfileStore = types
 		},
 		get first(): typeof Profile.Type {
 			return values(self.data)[0];
-		}
+		},
 	}))
 	.actions(self => ({
 		fetch: flow(function*(appKey: string) {
@@ -53,7 +53,13 @@ export const ProfileStore = types
 			self.loading = false;
 		}),
 
-		create: flow(function* (appKey: string, data) {
+		create: flow(function*(appKey: string, data) {
 			yield api.post(`/apps/${appKey}/profiles`, data);
-		})
+		}),
+
+		release(profile: typeof Profile.Type) {
+			return api.post(
+				`/apps/${profile.appKey}/profiles/${profile.key}/release`,
+			);
+		},
 	}));

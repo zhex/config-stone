@@ -26,6 +26,7 @@ const menu = (
 export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	public state = {
 		itemModal: false,
+		releaseConfirmModal: false,
 	};
 
 	private cols = [
@@ -86,7 +87,9 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 						</span>
 					</h2>
 					<Button.Group>
-						<Button icon="play-circle-o">Release</Button>
+						<Button icon="play-circle-o" onClick={this.release}>
+							Release
+						</Button>
 						<Button icon="rollback">Revert</Button>
 						<Button>Gray</Button>
 						<Dropdown overlay={menu}>
@@ -134,12 +137,30 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					pagination={false}
 					size="middle"
 				/>
+
+				<Modal
+					title="Create New Item"
+					visible={this.state.releaseConfirmModal}
+					onCancel={this.toggleReleaseConfirmModal}
+				>
+					<p>Profile has been released.</p>
+				</Modal>
 			</ContentPanel>
 		) : null;
 	}
 
 	private toggleItemModal = () => {
 		this.setState({ itemModal: !this.state.itemModal });
+	};
+
+	private toggleReleaseConfirmModal = () => {
+		this.setState({ releaseConfirmModal: !this.state.releaseConfirmModal });
+	};
+
+	private release = async () => {
+		const { store } = this.props;
+		await store.profiles.release(this.profile);
+		this.toggleReleaseConfirmModal();
 	};
 
 	private createItem = (data, form) => {
