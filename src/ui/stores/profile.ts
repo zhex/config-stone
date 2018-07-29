@@ -4,10 +4,10 @@ import { api } from 'utils/api';
 import { array2map } from 'utils/helper';
 
 export const Profile = types.model('Profile', {
-	id: types.maybe(types.identifierNumber),
+	id: types.maybe(types.number),
 	name: types.maybe(types.string),
-	key: types.maybe(types.string),
-	appId: types.maybe(types.number),
+	key: types.maybe(types.identifier),
+	appKey: types.maybe(types.string),
 });
 
 export const ProfileStore = types
@@ -16,8 +16,8 @@ export const ProfileStore = types
 		loading: false,
 	})
 	.views(self => ({
-		get(id: number) {
-			return self.data.get(id + '');
+		get(key: string) {
+			return self.data.get(key);
 		},
 		get list() {
 			return values(self.data);
@@ -27,33 +27,33 @@ export const ProfileStore = types
 		}
 	}))
 	.actions(self => ({
-		fetch: flow(function*(appId: number) {
+		fetch: flow(function*(appKey: string) {
 			self.loading = true;
 			try {
 				const profiles = yield api
-					.get(`/apps/${appId}/profiles`)
+					.get(`/apps/${appKey}/profiles`)
 					.then(result => result.data);
-				applySnapshot(self.data, array2map(profiles, 'id'));
+				applySnapshot(self.data, array2map(profiles, 'key'));
 			} catch (err) {
 				// self.error = err;
 			}
 			self.loading = false;
 		}),
 
-		fetchById: flow(function*(appId: number, id: number) {
+		fetchByKey: flow(function*(appKey: string, key: string) {
 			self.loading = true;
 			try {
 				const profile = yield api
-					.get(`/apps/${appId}/profiles/${id}`)
+					.get(`/apps/${appKey}/profiles/${key}`)
 					.then(result => result.data);
-				self.data.set(profile.id, profile);
+				self.data.set(profile.key, profile);
 			} catch (err) {
 				// todo
 			}
 			self.loading = false;
 		}),
 
-		create: flow(function* (appId: number, data) {
-			yield api.post(`/apps/${appId}/profiles`, data);
+		create: flow(function* (appKey: string, data) {
+			yield api.post(`/apps/${appKey}/profiles`, data);
 		})
 	}));

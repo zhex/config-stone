@@ -36,7 +36,7 @@ class ProfileListInner extends React.Component<IProfileListProps> {
 
 	public componentDidMount() {
 		const { match, store } = this.props;
-		store.profiles.fetch(match.params.appId);
+		store.profiles.fetch(match.params.appKey);
 	}
 
 	public render() {
@@ -67,7 +67,7 @@ class ProfileListInner extends React.Component<IProfileListProps> {
 
 	private ListItem = item => (
 		<List.Item style={{ padding: '10px 20px' }}>
-			<Link to={`/apps/${item.appId}/profiles/${item.id}`}>
+			<Link to={`/apps/${item.appKey}/profiles/${item.key}`}>
 				{item.name}
 			</Link>
 		</List.Item>
@@ -75,11 +75,11 @@ class ProfileListInner extends React.Component<IProfileListProps> {
 
 	private createProfile = (data, form) => {
 		const { store, match } = this.props;
-		const app = store.apps.get(match.params.appId);
-		store.profiles.create(app.id, data).then(() => {
+		const app = store.apps.get(match.params.appKey);
+		store.profiles.create(app.key, data).then(() => {
 			this.toggleProfileModal();
 			form.resetFields();
-			store.profiles.fetch(app.id);
+			store.profiles.fetch(app.key);
 		});
 	};
 }

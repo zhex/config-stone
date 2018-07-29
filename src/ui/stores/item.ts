@@ -4,12 +4,13 @@ import { api } from 'utils/api';
 import { array2map } from 'utils/helper';
 
 export const Item = types.model('Item', {
-	id: types.maybe(types.identifierNumber),
-	key: types.maybe(types.string),
+	id: types.maybe(types.number),
+	key: types.maybe(types.identifier),
 	value: types.maybe(types.string),
 	comment: types.union(types.string, types.null),
 	order: types.maybe(types.number),
-	profileId: types.maybe(types.number),
+	appKey: types.maybe(types.string),
+	profileKey: types.maybe(types.string),
 });
 
 export const ItemStore = types
@@ -18,8 +19,8 @@ export const ItemStore = types
 		loading: false,
 	})
 	.views(self => ({
-		get(id: number) {
-			return self.data.get(id + '');
+		get(key: string) {
+			return self.data.get(key);
 		},
 
 		get list() {
@@ -33,43 +34,54 @@ export const ItemStore = types
 					n = item.order;
 				}
 			}
-			return n+1;
-		}
+			return n + 1;
+		},
 	}))
 	.actions(self => ({
-		fetch: flow(function*(appId: number, profileId: number) {
+		fetch: flow(function*(appKey: string, profileKey: string) {
 			self.loading = true;
 			try {
 				const items = yield api
-					.get(`/apps/${appId}/profiles/${profileId}/items`)
+					.get(`/apps/${appKey}/profiles/${profileKey}/items`)
 					.then(result => result.data);
-				applySnapshot(self.data, array2map(items, 'id'));
+				applySnapshot(self.data, array2map(items, 'key'));
 			} catch (err) {
 				// self.error = err;
 			}
 			self.loading = false;
 		}),
 
-		fetchById: flow(function*(appId: number, profileId: number, id: number) {
+		fetchByKey: flow(function*(
+			appKey: string,
+			profileKey: string,
+			key: string,
+		) {
 			self.loading = true;
 			try {
 				const item = yield api
-					.get(`/apps/${appId}/profiles/${profileId}/items/${id}`)
+					.get(`/apps/${appKey}/profiles/${profileKey}/items/${key}`)
 					.then(result => result.data);
-				self.data.set(item.id, item);
+				self.data.set(item.key, item);
 			} catch (err) {
 				// todo
 			}
 			self.loading = false;
 		}),
 
-		create: flow(function* (appId: number, profileId: number, data) {
+		create: flow(function*(appKey: string, profileKey: string, data) {
 			data.order = self.nextOrder;
-			yield api.post(`/apps/${appId}/profiles/${profileId}/items`, data);
+			yield api.post(
+				`/apps/${appKey}/profiles/${profileKey}/items`,
+				data,
+			);
 		}),
 
-		delete: flow(function* (appId: number, profileId: number, id: number) {
-			yield api.delete(`/apps/${appId}/profiles/${profileId}/items/${id}`);
-			self.data.delete(id.toString());
+		delete: flow(function*(item: typeof Item.Type) {
+			yield api.delete(
+				`/apps/${item.appKey}/profiles/${item.profileKey}/items/${
+					item.key
+				}`,
+			);
+			self.data.delete(item.key);
 		}),
 	}));

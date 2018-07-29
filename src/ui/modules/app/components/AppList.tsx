@@ -9,7 +9,7 @@ export interface IAppListProps {
 
 const renderApp = item => (
 	<List.Item>
-		<Link to={`/apps/${item.id}`}>{item.name}</Link>
+		<Link to={`/apps/${item.key}`}>{item.name}</Link>
 	</List.Item>
 );
 

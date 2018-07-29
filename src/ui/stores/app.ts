@@ -4,9 +4,9 @@ import { api } from 'utils/api';
 import { array2map } from 'utils/helper';
 
 export const App = types.model('App', {
-	id: types.maybe(types.identifierNumber),
+	id: types.maybe(types.number),
 	name: types.maybe(types.string),
-	key: types.maybe(types.string),
+	key: types.maybe(types.identifier),
 });
 
 export const AppStore = types
@@ -15,8 +15,8 @@ export const AppStore = types
 		loading: false,
 	})
 	.views(self => ({
-		get(id: number) {
-			return self.data.get(id + '');
+		get(key: string) {
+			return self.data.get(key);
 		},
 		get list() {
 			return values(self.data);
@@ -27,20 +27,20 @@ export const AppStore = types
 			self.loading = true;
 			try {
 				const apps = yield api.get('/apps').then(result => result.data);
-				applySnapshot(self.data, array2map(apps, 'id'));
+				applySnapshot(self.data, array2map(apps, 'key'));
 			} catch (err) {
 				// self.error = err;
 			}
 			self.loading = false;
 		}),
 
-		fetchById: flow(function*(id: number) {
+		fetchByKey: flow(function*(key: string) {
 			self.loading = true;
 			try {
 				const app = yield api
-					.get(`/apps/${id}`)
+					.get(`/apps/${key}`)
 					.then(result => result.data);
-				self.data.set(app.id, app);
+				self.data.set(app.key, app);
 			} catch (err) {
 				// todo
 			}

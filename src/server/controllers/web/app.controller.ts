@@ -25,7 +25,7 @@ export class AppController {
 	}
 
 	@Get(':key')
-	public async get(@Param('id') key: string) {
+	public async get(@Param('key') key: string) {
 		return this.appService.get(key);
 	}
 

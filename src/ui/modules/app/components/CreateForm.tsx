@@ -19,7 +19,7 @@ class CreateForm extends React.Component<ICreateFormProps> {
 						rules: [
 							{ required: true, message: 'Name is required' },
 						],
-					})(<InputBox />)}
+					})(<InputBox onChange={this.generateKey} />)}
 				</Form.Item>
 
 				<Form.Item label="Key">
@@ -46,6 +46,12 @@ class CreateForm extends React.Component<ICreateFormProps> {
 			}
 		});
 	};
+
+	private generateKey = (e) => {
+		const { form } = this.props;
+		const key =  e.target.value.toLowerCase().replace(' ', '-');
+		form.setFieldsValue({ key });
+	}
 }
 
 export const AppCreateForm = Form.create()(observer(CreateForm));

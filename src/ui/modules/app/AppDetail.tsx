@@ -20,12 +20,12 @@ export interface IAppDetailProps extends RouteComponentProps<any> {
 export class AppDetail extends React.Component<IAppDetailProps> {
 	public get app() {
 		const { store, match } = this.props;
-		return store.apps.get(match.params.appId);
+		return store.apps.get(match.params.appKey);
 	}
 
 	public componentDidMount() {
 		const { match, store } = this.props;
-		store.apps.fetchById(match.params.appId);
+		store.apps.fetchByKey(match.params.appKey);
 	}
 
 	public render() {

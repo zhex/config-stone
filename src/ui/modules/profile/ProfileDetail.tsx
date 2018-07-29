@@ -50,20 +50,20 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 
 	public get profile() {
 		const { store, match } = this.props;
-		return store.profiles.get(match.params.profileId);
+		return store.profiles.get(match.params.profileKey);
 	}
 
 	public componentDidMount() {
 		const { store, match } = this.props;
-		const { appId, profileId } = match.params;
-		store.items.fetch(appId, profileId);
+		const { appKey, profileKey } = match.params;
+		store.items.fetch(appKey, profileKey);
 	}
 
 	public componentWillReceiveProps(nextProps) {
 		const { store, match } = nextProps;
-		const { appId, profileId } = match.params;
-		if (profileId !== this.props.match.params.profileId) {
-			store.items.fetch(appId, profileId);
+		const { appKey, profileKey } = match.params;
+		if (profileKey !== this.props.match.params.profileId) {
+			store.items.fetch(appKey, profileKey);
 		}
 	}
 
@@ -143,18 +143,18 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	};
 
 	private createItem = (data, form) => {
-		const { store, match } = this.props;
-		const app = store.apps.get(match.params.appId);
-		store.items.create(app.id, this.profile.id, data).then(() => {
-			this.toggleItemModal();
-			form.resetFields();
-			store.items.fetch(app.id, this.profile.id);
-		});
+		const { store } = this.props;
+		store.items
+			.create(this.profile.appKey, this.profile.key, data)
+			.then(() => {
+				this.toggleItemModal();
+				form.resetFields();
+				store.items.fetch(this.profile.appKey, this.profile.key);
+			});
 	};
 
-	private deleteItem = (item) => {
-		const { store, match } = this.props;
-		const app = store.apps.get(match.params.appId);
-		store.items.delete(app.id, this.profile.id, item.id);
+	private deleteItem = item => {
+		const { store } = this.props;
+		store.items.delete(item);
 	};
 }

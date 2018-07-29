@@ -17,7 +17,7 @@ import { Item } from '../../entities/item.entity';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
 
-@Controller('web/api/apps/:appId/profiles/:profileId/items')
+@Controller('web/api/apps/:appKey/profiles/:profileKey/items')
 export class ItemController {
 	constructor(
 		private readonly profileService: ProfileService,

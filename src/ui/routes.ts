@@ -6,11 +6,11 @@ import * as profile from 'modules/profile';
 export const routes: RouteConfig[] = [
 	{ path: '/', exact: true, component: app.AppList },
 	{
-		path: '/apps/:appId',
+		path: '/apps/:appKey',
 		component: app.AppDetail,
 		routes: [
 			{
-				path: '/apps/:appId/profiles/:profileId',
+				path: '/apps/:appKey/profiles/:profileKey',
 				exact: true,
 				component: profile.ProfileDetail,
 			},
