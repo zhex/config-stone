@@ -2,10 +2,12 @@ import { Button, Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { observer } from 'mobx-react';
 import * as React from 'react';
+import { Item } from 'stores/item';
 
 const InputBox = observer(Input);
 
 export interface ICreateFormProps extends FormComponentProps {
+	items: ReadonlyArray<typeof Item.Type>;
 	handleSumbit?: (data, form?) => void;
 }
 
@@ -18,13 +20,16 @@ class CreateForm extends React.Component<ICreateFormProps> {
 					{form.getFieldDecorator('key', {
 						rules: [
 							{ required: true, message: 'Key is required' },
+							{ validator: this.keyExistValidator },
 						],
 					})(<InputBox />)}
 				</Form.Item>
 
 				<Form.Item label="Value">
 					{form.getFieldDecorator('value', {
-						rules: [{ required: true, message: 'Value is required' }],
+						rules: [
+							{ required: true, message: 'Value is required' },
+						],
 					})(<InputBox />)}
 				</Form.Item>
 
@@ -49,6 +54,14 @@ class CreateForm extends React.Component<ICreateFormProps> {
 				handleSumbit(values, form);
 			}
 		});
+	};
+
+	private keyExistValidator = (rule, value, callback) => {
+		const { items } = this.props;
+		if (items.map(item => item.key).indexOf(value) >= 0) {
+			callback('Key is already exist');
+		}
+		callback();
 	};
 }
 

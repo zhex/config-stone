@@ -124,7 +124,10 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 							onCancel={this.toggleItemModal}
 							footer={null}
 						>
-							<ItemCreateForm handleSumbit={this.createItem} />
+							<ItemCreateForm
+								items={store.items.list}
+								handleSumbit={this.createItem}
+							/>
 						</Modal>
 					</div>
 				</div>
@@ -169,9 +172,7 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	private releasedInfo() {
 		Modal.info({
 			title: 'Info',
-			content: (
-				<p>Profile has been released.</p>
-			),
+			content: <p>Profile has been released.</p>,
 			// tslint:disable-next-line:no-empty
 			onOk() {},
 		});
