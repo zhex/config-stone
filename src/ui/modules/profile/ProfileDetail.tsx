@@ -132,6 +132,7 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					dataSource={store.items.list as any}
 					bordered
 					pagination={false}
+					size="middle"
 				/>
 			</ContentPanel>
 		) : null;
