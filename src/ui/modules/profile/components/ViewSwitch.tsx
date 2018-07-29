@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import * as React from 'react';
 
 export const ViewSwitch = observer(() => (
-	<Radio.Group buttonStyle="solid" value="1">
+	<Radio.Group value="1">
 		<Radio.Button value="1">
 			<Icon type="table" />
 		</Radio.Button>

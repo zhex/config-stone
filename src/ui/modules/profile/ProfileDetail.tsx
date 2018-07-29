@@ -26,7 +26,6 @@ const menu = (
 export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	public state = {
 		itemModal: false,
-		releaseConfirmModal: false,
 	};
 
 	private cols = [
@@ -137,14 +136,6 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					pagination={false}
 					size="middle"
 				/>
-
-				<Modal
-					title="Create New Item"
-					visible={this.state.releaseConfirmModal}
-					onCancel={this.toggleReleaseConfirmModal}
-				>
-					<p>Profile has been released.</p>
-				</Modal>
 			</ContentPanel>
 		) : null;
 	}
@@ -153,14 +144,10 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 		this.setState({ itemModal: !this.state.itemModal });
 	};
 
-	private toggleReleaseConfirmModal = () => {
-		this.setState({ releaseConfirmModal: !this.state.releaseConfirmModal });
-	};
-
 	private release = async () => {
 		const { store } = this.props;
 		await store.profiles.release(this.profile);
-		this.toggleReleaseConfirmModal();
+		this.releasedInfo();
 	};
 
 	private createItem = (data, form) => {
@@ -178,4 +165,15 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 		const { store } = this.props;
 		store.items.delete(item);
 	};
+
+	private releasedInfo() {
+		Modal.info({
+			title: 'Info',
+			content: (
+				<p>Profile has been released.</p>
+			),
+			// tslint:disable-next-line:no-empty
+			onOk() {},
+		});
+	}
 }
