@@ -30,11 +30,17 @@ export class EtcdService {
 			if (!res.kvs.length) {
 				return null;
 			}
+			let config;
+			try {
+				config = JSON.parse(res.kvs[0].value.toString());
+			} catch(err) {
+				config = res.kvs[0].value.toString();
+			}
 			return {
 				appKey,
 				profileKey,
 				version: Number(res.kvs[0].version),
-				config: JSON.parse(res.kvs[0].value.toString()),
+				config,
 			};
 		});
 	}
