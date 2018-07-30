@@ -12,7 +12,8 @@ export interface IWatchMessage {
 @Injectable()
 export class EtcdService {
 	private client: Etcd3;
-	private prefix = 'config-data';
+	private readonly prefix = 'config-data';
+	private readonly memStorage = new Map<string, any>();
 
 	constructor(private readonly notifyService: NotifyService) {
 		this.client = new Etcd3();
@@ -24,8 +25,11 @@ export class EtcdService {
 		return this.client.put(key).value(data);
 	}
 
-	public getConfig(appKey: string, profileKey: string) {
+	public async getConfig(appKey: string, profileKey: string) {
 		const key = this.getConfigKey(appKey, profileKey);
+		if (this.memStorage.has(key)) {
+			return this.memStorage.get(key);
+		}
 		return this.client
 			.get(key)
 			.exec()
@@ -39,17 +43,22 @@ export class EtcdService {
 				} catch (err) {
 					config = res.kvs[0].value.toString();
 				}
-				return {
+				const data = {
 					appKey,
 					profileKey,
 					version: Number(res.kvs[0].version),
 					config,
 				};
+				this.memStorage.set(key, data);
+				return data;
 			});
 	}
 
 	public deleteConfig(appKey: string, profileKey: string) {
 		const key = this.getConfigKey(appKey, profileKey);
+		if (this.memStorage.has(key)) {
+			this.memStorage.delete(key);
+		}
 		return this.client
 			.delete()
 			.key(key)
@@ -73,12 +82,19 @@ export class EtcdService {
 			if (prefix !== this.prefix) {
 				return;
 			}
-			this.notifyService.emit(Events.configUpdate, {
+
+			const data = {
 				appKey,
 				profileKey,
 				version: Number(res.version),
 				config: JSON.parse(val),
-			});
+			};
+
+			if (this.memStorage.has(key)) {
+				this.memStorage.set(key, data);
+			}
+
+			this.notifyService.emit(Events.configUpdate, data);
 		});
 
 		watcher.on('delete', res => {
@@ -86,6 +102,10 @@ export class EtcdService {
 			const [prefix, appKey, profileKey] = key.split('/');
 			if (prefix !== this.prefix) {
 				return;
+			}
+
+			if (this.memStorage.has(key)) {
+				this.memStorage.delete(key);
 			}
 
 			this.notifyService.emit(Events.configDelete, {

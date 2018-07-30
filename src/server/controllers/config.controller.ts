@@ -10,7 +10,13 @@ import { Events, NotifyService } from '../services/notify.service';
 
 @Controller('api')
 export class ConfigController {
-	private supportExts = ['json', 'yml', 'yaml', 'properties', 'toml'];
+	private readonly supportExts = [
+		'json',
+		'yml',
+		'yaml',
+		'properties',
+		'toml',
+	];
 
 	constructor(
 		private readonly etcdService: EtcdService,
@@ -48,7 +54,7 @@ export class ConfigController {
 			res.end();
 		} else if (version) {
 			// immidiately return if version is newer
-			if(config.version > version) {
+			if (config.version > version) {
 				return res.json(config);
 			}
 
@@ -60,25 +66,34 @@ export class ConfigController {
 					data.profileKey === profileKey
 				) {
 					clearTimeout(timer);
-					this.notifyService.removeListener(Events.configDelete, deleteHandler);
+					this.notifyService.removeListener(
+						Events.configDelete,
+						deleteHandler,
+					);
 					res.json(data);
 				}
 			};
 
 			const deleteHandler = (data: IWatchMessage) => {
-				if (
-					data.appKey === appKey &&
-					data.profileKey === profileKey
-				) {
+				if (data.appKey === appKey && data.profileKey === profileKey) {
 					clearTimeout(timer);
-					this.notifyService.removeListener(Events.configUpdate, updateHandler);
+					this.notifyService.removeListener(
+						Events.configUpdate,
+						updateHandler,
+					);
 					res.status(status.NOT_FOUND).end();
 				}
 			};
 
 			const timer = setTimeout(() => {
-				this.notifyService.removeListener(Events.configUpdate, updateHandler);
-				this.notifyService.removeListener(Events.configDelete, deleteHandler);
+				this.notifyService.removeListener(
+					Events.configUpdate,
+					updateHandler,
+				);
+				this.notifyService.removeListener(
+					Events.configDelete,
+					deleteHandler,
+				);
 				res.status(status.NOT_MODIFIED).end();
 			}, 15 * 1000);
 
