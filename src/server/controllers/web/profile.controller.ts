@@ -13,6 +13,7 @@ import {
 import { plainToClass } from 'class-transformer';
 import * as status from 'http-status';
 import { ProfileDTO } from '../../dto/profile.dto';
+import { ReleaseDTO } from '../../dto/release.dto';
 import { Profile } from '../../entities/profile.entity';
 import { AppService } from '../../services/app.service';
 import { ProfileService } from '../../services/profile.service';
@@ -65,7 +66,7 @@ export class ProfileController {
 	) {
 		const profile = await this.get(appKey, key);
 		if (!profile) {
-			throw new BadRequestException('invalid profile id');
+			throw new BadRequestException('invalid profile key');
 		}
 		await this.profileService.update(profile, data);
 		return null;
@@ -86,8 +87,14 @@ export class ProfileController {
 	public async release(
 		@Param('appKey') appKey: string,
 		@Param('key') key: string,
+		@Body(new ValidationPipe())
+		data: ReleaseDTO,
 	) {
-		await this.profileService.release(appKey, key);
+		const profile = await this.profileService.get(appKey, key);
+		if (!profile) {
+			throw new BadRequestException('invalid profile key');
+		}
+		await this.profileService.release(appKey, key, data.name);
 		return null;
 	}
 }

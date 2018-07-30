@@ -9,6 +9,7 @@ import { ProfileController } from './controllers/web/profile.controller';
 import { App } from './entities/app.entity';
 import { Item } from './entities/item.entity';
 import { Profile } from './entities/profile.entity';
+import { Release } from './entities/release.entity';
 import { AppService } from './services/app.service';
 import { EtcdService } from './services/etcd.service';
 import { ItemService } from './services/item.service';
@@ -18,7 +19,7 @@ import { ProfileService } from './services/profile.service';
 @Module({
 	imports: [
 		TypeOrmModule.forRoot(),
-		TypeOrmModule.forFeature([App, Profile, Item]),
+		TypeOrmModule.forFeature([App, Profile, Item, Release]),
 	],
 	controllers: [
 		AppController,

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProfileDTO } from '../dto/profile.dto';
 import { Profile } from '../entities/profile.entity';
+import { Release } from '../entities/release.entity';
 import { EtcdService } from './etcd.service';
 import { ItemService } from './item.service';
 
@@ -11,6 +12,8 @@ export class ProfileService {
 	constructor(
 		@InjectRepository(Profile)
 		private readonly profileRepo: Repository<Profile>,
+		@InjectRepository(Release)
+		private readonly releaseRepo: Repository<Release>,
 		private readonly itemService: ItemService,
 		private readonly etcdService: EtcdService,
 	) {}
@@ -38,12 +41,18 @@ export class ProfileService {
 		return true;
 	}
 
-	public async release(appKey: string, key: string) {
+	public async release(appKey: string, key: string, name: string) {
 		const items = await this.itemService.all(appKey, key);
 		const val = items.reduce((colleciton, item) => {
 			colleciton[item.key] = item.value;
 			return colleciton;
 		}, {});
+		await this.releaseRepo.insert({
+			name,
+			appKey,
+			profileKey: key,
+			data: JSON.stringify(val),
+		});
 		await this.etcdService.setConfig(appKey, key, val);
 	}
 }
