@@ -57,9 +57,10 @@ export const ProfileStore = types
 			yield api.post(`/apps/${appKey}/profiles`, data);
 		}),
 
-		release(profile: typeof Profile.Type) {
+		release(profile: typeof Profile.Type, data) {
 			return api.post(
 				`/apps/${profile.appKey}/profiles/${profile.key}/release`,
+				data,
 			);
 		},
 	}));

@@ -6,6 +6,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { Filter } from './components/Filter';
 import { ItemCreateForm } from './components/ItemCreateForm';
+import { ReleaseForm } from './components/ReleaseForm';
 import { ViewSwitch } from './components/ViewSwitch';
 
 export interface IProfileDetailProps extends RouteComponentProps<any> {
@@ -26,6 +27,7 @@ const menu = (
 export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	public state = {
 		itemModal: false,
+		releaseModal: false,
 	};
 
 	private cols = [
@@ -86,7 +88,10 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 						</span>
 					</h2>
 					<Button.Group>
-						<Button icon="play-circle-o" onClick={this.release}>
+						<Button
+							icon="play-circle-o"
+							onClick={this.toggleReleaseModal}
+						>
 							Release
 						</Button>
 						<Button icon="rollback">Revert</Button>
@@ -139,6 +144,16 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 					pagination={false}
 					size="middle"
 				/>
+
+				<Modal
+					title="Release"
+					visible={this.state.releaseModal}
+					onCancel={this.toggleReleaseModal}
+					footer={null}
+					destroyOnClose={true}
+				>
+					<ReleaseForm handleSumbit={this.release} />
+				</Modal>
 			</ContentPanel>
 		) : null;
 	}
@@ -147,9 +162,15 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 		this.setState({ itemModal: !this.state.itemModal });
 	};
 
-	private release = async () => {
+	private toggleReleaseModal = () => {
+		this.setState({ releaseModal: !this.state.releaseModal });
+	};
+
+	private release = async (data, form) => {
 		const { store } = this.props;
-		await store.profiles.release(this.profile);
+		await store.profiles.release(this.profile, data);
+		this.toggleReleaseModal();
+		form.resetFields();
 		this.releasedInfo();
 	};
 
