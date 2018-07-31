@@ -12,7 +12,7 @@ import { ItemSetDTO } from '../../dto/item-set.dto';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
 
-@Controller('web/api/apps/:appId/profiles/:profileId/itemset')
+@Controller('web/api/apps/:appKey/profiles/:profileKey/itemset')
 export class ItemSetController {
 	constructor(
 		private readonly profileService: ProfileService,
@@ -22,15 +22,16 @@ export class ItemSetController {
 	@Post()
 	@HttpCode(status.NO_CONTENT)
 	public async updateSet(
-		@Param('profileId') profileId: number,
+		@Param('appKey') appKey: string,
+		@Param('profileKey') profileKey: string,
 		@Body(new ValidationPipe())
 		data: ItemSetDTO,
 	) {
-		const profile = await this.profileService.get(profileId);
+		const profile = await this.profileService.get(appKey, profileKey);
 		if (!profile) {
 			throw new BadRequestException('invalid profile key');
 		}
-		await this.itemService.updateSet(profileId, data);
+		await this.itemService.updateSet(appKey, profileKey, data);
 		return null;
 	}
 }

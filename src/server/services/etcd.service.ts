@@ -16,7 +16,10 @@ export class EtcdService {
 	private readonly memStorage = new Map<string, any>();
 
 	constructor(private readonly notifyService: NotifyService) {
-		this.client = new Etcd3();
+		const urls = (process.env.ETCD_HOSTS || 'http://localhost:2379');
+		this.client = new Etcd3({
+			hosts: urls.split(','),
+		});
 	}
 
 	public setConfig(appKey: string, profileKey: string, value: any) {

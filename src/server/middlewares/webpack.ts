@@ -6,12 +6,12 @@ import {
 	INestApplication,
 	NotFoundException,
 } from '@nestjs/common';
-import * as webpack from 'webpack';
-import * as middleware from 'webpack-dev-middleware';
-import * as hotMiddlware from 'webpack-hot-middleware';
-import * as config from '../../webpack.config';
 
 export const injectWebpack = (app: INestApplication) => {
+	const webpack = require('webpack');
+	const middleware = require('webpack-dev-middleware');
+	const hotMiddlware = require('webpack-hot-middleware');
+	const config = require('../../webpack.config');
 	const compiler = webpack(config);
 
 	@Catch(NotFoundException)
