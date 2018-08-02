@@ -32,7 +32,7 @@ export class ItemController {
 		return this.itemService.all(appKey, profileKey);
 	}
 
-	@Get(':id')
+	@Get(':key')
 	public async get(
 		@Param('appKey') appKey: string,
 		@Param('profileKey') profileKey: string,
@@ -68,7 +68,7 @@ export class ItemController {
 		return null;
 	}
 
-	@Put(':id')
+	@Put(':key')
 	@HttpCode(status.NO_CONTENT)
 	public async update(
 		@Param('appKey') appKey: string,
@@ -86,7 +86,7 @@ export class ItemController {
 		return null;
 	}
 
-	@Delete(':id')
+	@Delete(':key')
 	@HttpCode(status.NO_CONTENT)
 	public async delete(
 		@Param('appKey') appKey: string,

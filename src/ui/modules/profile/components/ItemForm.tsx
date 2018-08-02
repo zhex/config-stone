@@ -7,11 +7,12 @@ import { Item } from 'stores/item';
 const InputBox = observer(Input);
 
 export interface ICreateFormProps extends FormComponentProps {
+	item?: typeof Item.Type;
 	items: ReadonlyArray<typeof Item.Type>;
 	handleSumbit?: (data, form?) => void;
 }
 
-class CreateForm extends React.Component<ICreateFormProps> {
+class InnerForm extends React.Component<ICreateFormProps> {
 	public render() {
 		const { form } = this.props;
 		return (
@@ -57,12 +58,27 @@ class CreateForm extends React.Component<ICreateFormProps> {
 	};
 
 	private keyExistValidator = (rule, value, callback) => {
-		const { items } = this.props;
-		if (items.map(item => item.key).indexOf(value) >= 0) {
-			callback('Key is already exist');
+		const { items, item } = this.props;
+		const idx = items.map(i => i.key).indexOf(value);
+		if ( idx >= 0  ) {
+			if (item) {
+				if (item.id !== items[idx].id) {
+					callback('Key is already exist');
+				}
+			} else {
+				callback('Key is already exist');
+			}
 		}
 		callback();
 	};
 }
 
-export const ItemCreateForm = Form.create()(observer(CreateForm));
+export const ItemForm = Form.create({
+	mapPropsToFields(props: ICreateFormProps) {
+		return  props.item ? {
+			key: Form.createFormField({ value: props.item.key }),
+			value: Form.createFormField({ value: props.item.value }),
+			comment: Form.createFormField({ value: props.item.comment }),
+		} : {};
+	}
+})(observer(InnerForm));

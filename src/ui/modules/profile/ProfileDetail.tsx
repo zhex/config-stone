@@ -5,7 +5,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { SiteStore } from 'stores';
 import { Filter } from './components/Filter';
-import { ItemCreateForm } from './components/ItemCreateForm';
+import { ItemForm } from './components/ItemForm';
 import { ReleaseForm } from './components/ReleaseForm';
 import { ViewSwitch } from './components/ViewSwitch';
 
@@ -28,6 +28,7 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 	public state = {
 		itemModal: false,
 		releaseModal: false,
+		currentItem: null,
 	};
 
 	private cols = [
@@ -38,7 +39,12 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 			title: 'Actions',
 			render: (text, record) => (
 				<div>
-					<Button icon="edit" size="small" shape="circle" />
+					<Button
+						icon="edit"
+						size="small"
+						shape="circle"
+						onClick={this.toggleItemModal.bind(null, record)}
+					/>
 					<Button
 						icon="close"
 						size="small"
@@ -121,15 +127,20 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 							shape="circle"
 							type="primary"
 							icon="plus"
-							onClick={this.toggleItemModal}
+							onClick={this.toggleItemModal.bind(null, null)}
 						/>
 						<Modal
-							title="Create New Item"
+							title={
+								this.state.currentItem
+									? 'Edit Item'
+									: 'Create New Item'
+							}
 							visible={this.state.itemModal}
-							onCancel={this.toggleItemModal}
+							onCancel={this.toggleItemModal.bind(null, null)}
 							footer={null}
 						>
-							<ItemCreateForm
+							<ItemForm
+								item={this.state.currentItem}
 								items={store.items.list}
 								handleSumbit={this.createItem}
 							/>
@@ -158,8 +169,8 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 		) : null;
 	}
 
-	private toggleItemModal = () => {
-		this.setState({ itemModal: !this.state.itemModal });
+	private toggleItemModal = (item?) => {
+		this.setState({ itemModal: !this.state.itemModal, currentItem: item });
 	};
 
 	private toggleReleaseModal = () => {
@@ -174,15 +185,20 @@ export class ProfileDetail extends React.Component<IProfileDetailProps, any> {
 		this.releasedInfo();
 	};
 
-	private createItem = (data, form) => {
+	private createItem = async (data, form) => {
 		const { store } = this.props;
-		store.items
-			.create(this.profile.appKey, this.profile.key, data)
-			.then(() => {
-				this.toggleItemModal();
-				form.resetFields();
-				store.items.fetch(this.profile.appKey, this.profile.key);
-			});
+		const { currentItem } = this.state;
+
+		if (currentItem) {
+			await store.items.update(this.profile.appKey, this.profile.key, currentItem.key, data);
+		} else {
+			await store.items.create(this.profile.appKey, this.profile.key, data);
+		}
+		this.toggleItemModal();
+		form.resetFields();
+		if (!currentItem) {
+			store.items.fetch(this.profile.appKey, this.profile.key);
+		}
 	};
 
 	private deleteItem = item => {

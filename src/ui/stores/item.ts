@@ -76,6 +76,19 @@ export const ItemStore = types
 			);
 		}),
 
+		update: flow(function*(
+			appKey: string,
+			profileKey: string,
+			key: string,
+			data,
+		) {
+			yield api.put(
+				`/apps/${appKey}/profiles/${profileKey}/items/${key}`,
+				data,
+			);
+			applySnapshot(self.get(key), data);
+		}),
+
 		delete: flow(function*(item: typeof Item.Type) {
 			yield api.delete(
 				`/apps/${item.appKey}/profiles/${item.profileKey}/items/${
