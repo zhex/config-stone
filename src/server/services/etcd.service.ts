@@ -23,7 +23,7 @@ export class EtcdService {
 	}
 
 	public setConfig(appKey: string, profileKey: string, value: any) {
-		const data = JSON.stringify(value);
+		const data =  typeof value === 'string' ? value : JSON.stringify(value);
 		const key = this.getConfigKey(appKey, profileKey);
 		return this.client.put(key).value(data);
 	}

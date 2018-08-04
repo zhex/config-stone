@@ -123,4 +123,18 @@ export class ProfileController {
 		await this.releaseService.release(appKey, key, data.name);
 		return null;
 	}
+
+	@Post(':key/revert')
+	@HttpCode(status.NO_CONTENT)
+	public async revert(
+		@Param('appKey') appKey: string,
+		@Param('key') key: string,
+	) {
+		const profile = await this.profileService.get(appKey, key);
+		if (!profile) {
+			throw new BadRequestException('invalid profile key');
+		}
+		await this.releaseService.revert(appKey, key);
+		return null;
+	}
 }

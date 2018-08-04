@@ -2,12 +2,12 @@ import { Column, Entity, Index } from 'typeorm';
 import { Base } from './base.entity';
 
 export enum ReleaseTypes {
-	Normal = 1,
 	Discard = 0,
+	Normal = 1,
 }
 
 @Entity('releases')
-@Index('app_profile_key', ['appKey', 'profileKey'])
+@Index('app_profile_release_key', ['appKey', 'profileKey'])
 export class Release extends Base {
 	@Column('varchar')
 	public appKey: string;
