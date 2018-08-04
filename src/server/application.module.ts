@@ -9,17 +9,19 @@ import { ProfileController } from './controllers/web/profile.controller';
 import { App } from './entities/app.entity';
 import { Item } from './entities/item.entity';
 import { Profile } from './entities/profile.entity';
+import { ReleaseHistory } from './entities/release-history.entity';
 import { Release } from './entities/release.entity';
 import { AppService } from './services/app.service';
 import { EtcdService } from './services/etcd.service';
 import { ItemService } from './services/item.service';
 import { NotifyService } from './services/notify.service';
 import { ProfileService } from './services/profile.service';
+import { ReleaseService } from './services/release.service';
 
 @Module({
 	imports: [
 		TypeOrmModule.forRoot(),
-		TypeOrmModule.forFeature([App, Profile, Item, Release]),
+		TypeOrmModule.forFeature([App, Profile, Item, Release, ReleaseHistory]),
 	],
 	controllers: [
 		AppController,
@@ -33,6 +35,7 @@ import { ProfileService } from './services/profile.service';
 		ItemService,
 		EtcdService,
 		NotifyService,
+		ReleaseService,
 	],
 })
 export class ApplicationModule implements OnModuleInit {

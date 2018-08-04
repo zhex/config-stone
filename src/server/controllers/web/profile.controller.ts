@@ -17,12 +17,14 @@ import { ReleaseDTO } from '../../dto/release.dto';
 import { Profile } from '../../entities/profile.entity';
 import { AppService } from '../../services/app.service';
 import { ProfileService } from '../../services/profile.service';
+import { ReleaseService } from '../../services/release.service';
 
 @Controller('web/api/apps/:appKey/profiles')
 export class ProfileController {
 	constructor(
 		private readonly appService: AppService,
 		private readonly profileService: ProfileService,
+		private readonly releaseService: ReleaseService,
 	) {}
 
 	@Get()
@@ -82,6 +84,30 @@ export class ProfileController {
 		return null;
 	}
 
+	@Get(':key/releases')
+	public async getReleases(
+		@Param('appKey') appKey: string,
+		@Param('key') key: string,
+	) {
+		const profile = await this.profileService.get(appKey, key);
+		if (!profile) {
+			throw new BadRequestException('invalid profile key');
+		}
+		return this.releaseService.getReleases(appKey, key);
+	}
+
+	@Get(':key/release-histories')
+	public async getReleaseHistories(
+		@Param('appKey') appKey: string,
+		@Param('key') key: string,
+	) {
+		const profile = await this.profileService.get(appKey, key);
+		if (!profile) {
+			throw new BadRequestException('invalid profile key');
+		}
+		return this.releaseService.getHistory(appKey, key);
+	}
+
 	@Post(':key/release')
 	@HttpCode(status.NO_CONTENT)
 	public async release(
@@ -94,7 +120,7 @@ export class ProfileController {
 		if (!profile) {
 			throw new BadRequestException('invalid profile key');
 		}
-		await this.profileService.release(appKey, key, data.name);
+		await this.releaseService.release(appKey, key, data.name);
 		return null;
 	}
 }
