@@ -6,7 +6,7 @@ import {
 	HttpCode,
 	Param,
 	Post,
-	PUT,
+	Put,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { UserDTO } from '../../dto/user.dto';
@@ -33,7 +33,7 @@ export class UserController {
 		return user.id;
 	}
 
-	@PUT(':id')
+	@Put(':id')
 	@HttpCode(status.NO_CONTENT)
 	public async edit(@Param('id') id: number, @Body() data: UserDTO) {
 		await this.userService.update(id, data);
