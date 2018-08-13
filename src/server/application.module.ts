@@ -1,6 +1,8 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module, NestModule, OnModuleInit, RequestMethod } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NextFunction, Request, Response } from 'express';
+import * as passport from 'passport';
 import { logger } from './common/logger';
 import { ConfigController } from './controllers/config.controller';
 import { AppController } from './controllers/web/app.controller';
@@ -38,7 +40,7 @@ import { ReleaseService } from './services/release.service';
 		ReleaseService,
 	],
 })
-export class ApplicationModule implements OnModuleInit {
+export class ApplicationModule implements OnModuleInit, NestModule {
 	private etcdService: EtcdService;
 
 	constructor(private readonly moduleRef: ModuleRef) {
@@ -49,4 +51,29 @@ export class ApplicationModule implements OnModuleInit {
 		logger.info('watching config change');
 		this.etcdService.watchConfig();
 	}
+
+	public configure(consumer) {
+        consumer.apply(this.authorize).forRoutes({
+            path: '/api/session/authorize',
+            method: RequestMethod.POST,
+        });
+    }
+
+    private authorize(req: Request, res: Response, next: NextFunction) {
+        passport.authenticate('local', (err, user, info) => {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return res.status(401).json(info);
+            }
+
+            req.login(user, error => {
+                if (error) {
+					return next(error);
+				}
+                return res.json(user);
+            });
+        })(req, res, next);
+    }
 }
