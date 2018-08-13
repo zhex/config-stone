@@ -1,5 +1,5 @@
 import { compareSync, hashSync } from 'bcrypt';
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import { Base } from './base.entity';
 
 export enum UserStatus {
@@ -27,5 +27,10 @@ export class User extends Base {
 
 	public comparePassword(pass: string): boolean {
         return compareSync(pass, this.password);
+	}
+
+	@BeforeInsert()
+    private beforeCreate() {
+        this.password = User.encryptPassword(this.password);
     }
 }
