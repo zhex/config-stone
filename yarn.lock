@@ -879,7 +879,7 @@ bignumber.js@4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.4.tgz#7c40f5abcd2d6623ab7b99682ee7db81b11889a4"
 
-bignumber.js@^4.1.0:
+bignumber.js@4.1.0, bignumber.js@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
 
@@ -1527,6 +1527,10 @@ cpx@^1.5.0:
     shell-quote "^1.6.1"
     subarg "^1.0.0"
 
+crc@3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/crc/-/crc-3.4.4.tgz#9da1e980e3bd44fc5c93bf5ab3da3378d85e466b"
+
 create-ecdh@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.3.tgz#c9111b6f33045c4697f144787f9254cdc77c45ff"
@@ -1729,7 +1733,7 @@ debug@2.6.9, debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.
   dependencies:
     ms "2.0.0"
 
-debug@^3.1.0:
+debug@3.1.0, debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
@@ -2247,6 +2251,29 @@ expect@^23.4.0:
     jest-matcher-utils "^23.2.0"
     jest-message-util "^23.4.0"
     jest-regex-util "^23.3.0"
+
+express-mysql-session@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/express-mysql-session/-/express-mysql-session-2.0.1.tgz#27c11a83d3b0843d0ee48f0df51b86cb969355ef"
+  dependencies:
+    debug "3.1.0"
+    express-session "1.15.6"
+    mysql "2.16.0"
+    underscore "1.9.1"
+
+express-session@1.15.6:
+  version "1.15.6"
+  resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.6.tgz#47b4160c88f42ab70fe8a508e31cbff76757ab0a"
+  dependencies:
+    cookie "0.3.1"
+    cookie-signature "1.0.6"
+    crc "3.4.4"
+    debug "2.6.9"
+    depd "~1.1.1"
+    on-headers "~1.0.1"
+    parseurl "~1.3.2"
+    uid-safe "~2.1.5"
+    utils-merge "1.0.1"
 
 express@4.16.3, express@^4.16.3:
   version "4.16.3"
@@ -4337,6 +4364,15 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
+mysql@2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.16.0.tgz#b23b22ab5de44fc2d5d32bd4f5af6653fc45e2ba"
+  dependencies:
+    bignumber.js "4.1.0"
+    readable-stream "2.3.6"
+    safe-buffer "5.1.2"
+    sqlstring "2.3.1"
+
 mysql@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.15.0.tgz#ea16841156343e8f2e47fc8985ec41cdd9573b5c"
@@ -5180,6 +5216,10 @@ raf@^3.4.0:
   dependencies:
     performance-now "^2.1.0"
 
+random-bytes@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/random-bytes/-/random-bytes-1.0.0.tgz#4f68a1dc0ae58bd3fb95848c30324db75d64360b"
+
 randomatic@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-3.0.0.tgz#d35490030eb4f7578de292ce6dfb04a91a128923"
@@ -5666,7 +5706,7 @@ read-pkg@^1.0.0:
     normalize-package-data "^2.3.2"
     path-type "^1.0.0"
 
-"readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6:
+"readable-stream@1 || 2", readable-stream@2.3.6, readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   dependencies:
@@ -5953,7 +5993,7 @@ safe-buffer@5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
+safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
 
@@ -6241,6 +6281,10 @@ sprintf-js@~1.0.2:
 sqlstring@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.0.tgz#525b8a4fd26d6f71aa61e822a6caf976d31ad2a8"
+
+sqlstring@2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.1.tgz#475393ff9e91479aea62dcaf0ca3d14983a7fb40"
 
 sshpk@^1.7.0:
   version "1.14.2"
@@ -6772,11 +6816,21 @@ uglifyjs-webpack-plugin@^1.2.4:
     webpack-sources "^1.1.0"
     worker-farm "^1.5.2"
 
+uid-safe@~2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/uid-safe/-/uid-safe-2.1.5.tgz#2b3d5c7240e8fc2e58f8aa269e5ee49c0857bd3a"
+  dependencies:
+    random-bytes "~1.0.0"
+
 undefsafe@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.2.tgz#225f6b9e0337663e0d8e7cfd686fc2836ccace76"
   dependencies:
     debug "^2.2.0"
+
+underscore@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
 
 union-value@^1.0.0:
   version "1.0.0"
