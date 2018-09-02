@@ -4,10 +4,12 @@ import { observer, Provider } from 'mobx-react';
 import * as React from 'react';
 import { renderRoutes, RouteConfig } from 'react-router-config';
 import { BrowserRouter } from 'react-router-dom';
+import { SiteStore } from '../../stores';
 import { AppHeader } from './AppHeader';
+import { LoginPanel } from './LoginPanel';
 
 export interface IAppProps {
-	store: any;
+	store: typeof SiteStore.Type;
 	routes: RouteConfig[];
 }
 
@@ -18,8 +20,14 @@ export const Application: React.SFC<IAppProps> = observer(
 		<Provider store={store}>
 			<BrowserRouter>
 				<Layout style={s}>
-					<AppHeader />
-					{renderRoutes(routes)}
+					{store.session.user ? (
+						<div>
+							<AppHeader/>
+							{renderRoutes(routes)}
+						</div>
+					) : (
+						<LoginPanel/>
+					)}
 				</Layout>
 			</BrowserRouter>
 		</Provider>

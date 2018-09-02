@@ -40,7 +40,7 @@ export const injectWebpack = (app: INestApplication) => {
 		}
 	}
 
-	app.use(middleware(compiler, { stats: 'errors-only' }));
+	app.use(middleware(compiler, { stats: 'errors-only', watchOptions: { poll: true } }));
 	app.use(hotMiddlware(compiler));
 
 	app.useGlobalFilters(new FallbackException());
