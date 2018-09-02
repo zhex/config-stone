@@ -20,8 +20,7 @@ export class AppController {
 
 	@Get()
 	public async all() {
-		const apps = await this.appService.all();
-		return apps;
+		return this.appService.all();
 	}
 
 	@Get(':key')

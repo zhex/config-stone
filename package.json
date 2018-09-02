@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "config management server",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon",
+    "dev": "NODE_ENV=development nodemon -L",
     "clean": "rm -rf dist",
     "test": "jest",
     "build:server": "tsc -p tsconfig.json --skipLibCheck",
@@ -71,6 +71,7 @@
     "styled-components": "^3.3.3",
     "ts-jest": "^23.0.1",
     "ts-loader": "^4.4.2",
+    "ts-node": "^7.0.1",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
     "typescript": "^2.9.2",

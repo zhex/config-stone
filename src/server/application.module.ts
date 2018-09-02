@@ -11,6 +11,7 @@ import * as passport from 'passport';
 import { logger } from './common/logger';
 import { ConfigController } from './controllers/config.controller';
 import { AppController } from './controllers/web/app.controller';
+import { AuthController } from './controllers/web/auth.controller';
 import { ItemController } from './controllers/web/item.controller';
 import { ProfileController } from './controllers/web/profile.controller';
 import { UserController } from './controllers/web/user.controller';
@@ -42,7 +43,7 @@ import { UserService } from './services/user.service';
 		]),
 	],
 	controllers: [
-		AuthService,
+		AuthController,
 		AppController,
 		ProfileController,
 		ItemController,

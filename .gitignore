@@ -73,4 +73,5 @@ typings/
 .serverless
 
 .vscode/
+.idea/
 dist/

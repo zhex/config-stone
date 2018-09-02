@@ -3,9 +3,9 @@ import { Request, Response } from 'express';
 
 @Controller('web/api/session')
 export class AuthController {
-    @Delete('logout')
-    public logout(@Req() req: Request, @Res() res: Response) {
-        req.logOut();
-        res.status(200).end();
-    }
+	@Delete('logout')
+	public logout(@Req() req: Request, @Res() res: Response) {
+		req.logOut();
+		res.status(200).end();
+	}
 }

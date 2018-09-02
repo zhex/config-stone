@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  app:
+    image: node:8
+    volumes:
+      - .:/workdir
+    ports:
+      - 3000:3000
+    working_dir: /workdir
+    environment:
+      MYSQL_DB_HOST: mysql
+      MYSQL_DB_PORT: 3306
+      MYSQL_DB_USER: root
+      MYSQL_DB_PASSWORD: root
+      MYSQL_DB_NAME: config_stone
+      ETCD_HOSTS: http://etcd:2379
+    command: npm run dev
+
+  mysql:
+    image: mysql:5
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: config_stone
+
+  etcd:
+    image: appcelerator/etcd:3.3
+    ports:
+      - 2379:2379
+
+volumes:
+  dbdata:
