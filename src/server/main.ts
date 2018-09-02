@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import * as morgan from 'morgan';
+import * as passport from 'passport';
 import { join } from 'path';
 import { ApplicationModule } from './application.module';
 import { FallbackException } from './common/fallback-exception';
@@ -12,6 +13,9 @@ import { injectWebpack } from './middlewares/webpack';
 	app.use(morgan('dev', { stream: new LogStream() }));
 	app.use(sessionMiddlware());
 
+	app.use(passport.initialize());
+	app.use(passport.session());
+
 	if (process.env.NODE_ENV === 'development') {
 		injectWebpack(app);
 	} else {
@@ -19,6 +23,7 @@ import { injectWebpack } from './middlewares/webpack';
 		app.useStaticAssets(root);
 		app.useGlobalFilters(new FallbackException());
 	}
+
 
 	app.listen(3000);
 })();

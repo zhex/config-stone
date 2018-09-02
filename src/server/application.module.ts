@@ -21,8 +21,8 @@ import { Profile } from './entities/profile.entity';
 import { ReleaseHistory } from './entities/release-history.entity';
 import { Release } from './entities/release.entity';
 import { User } from './entities/user.entity';
+import { LocalStrategy } from './passport/local.strategy';
 import { AppService } from './services/app.service';
-import { AuthService } from './services/auth.service';
 import { EtcdService } from './services/etcd.service';
 import { ItemService } from './services/item.service';
 import { NotifyService } from './services/notify.service';
@@ -58,7 +58,7 @@ import { UserService } from './services/user.service';
 		NotifyService,
 		ReleaseService,
 		UserService,
-		AuthService,
+		LocalStrategy,
 	],
 })
 export class ApplicationModule implements OnModuleInit, NestModule {

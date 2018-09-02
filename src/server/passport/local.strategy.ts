@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
 import { User } from '../entities/user.entity';
-import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 
 @Injectable()
 export class LocalStrategy extends Strategy {
 	constructor(
-		private readonly authService: AuthService,
 		private readonly userService: UserService,
 	) {
 		super(
@@ -33,7 +31,7 @@ export class LocalStrategy extends Strategy {
 	}
 
 	public async verify(email: string, password: string, done: any) {
-		const result = await this.authService.validateUser(email, password);
+		const result = await this.userService.validateUser(email, password);
 		if (result.error) {
 			done(null, false, result.error);
 		} else {

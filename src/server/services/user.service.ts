@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDTO } from '../dto/user.dto';
-import { User } from '../entities/user.entity';
+import { User, UserStatus } from '../entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -38,5 +38,34 @@ export class UserService {
 
 	public delete(id: number) {
 		return this.userRepository.delete(id);
+	}
+
+	public async validateUser(email: string, password: string) {
+		const user = await this.findByEmail(email);
+		if (!user) {
+			return {
+				error: {
+					message: "user does not exist",
+					code: 1001
+				}
+			};
+		}
+		if (user.status === UserStatus.DISABLED) {
+			return {
+				error: {
+					message: "user account is not activated",
+					code: 1002
+				}
+			};
+		}
+		if (!user.comparePassword(password)) {
+			return {
+				error: {
+					message: "incorrect password",
+					code: 1003
+				}
+			};
+		}
+		return { error: null, user };
 	}
 }
