@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getManager, Repository } from 'typeorm';
+import { getManager, In, Repository } from 'typeorm';
 import { AppDTO } from '../dto/app.dto';
 import { AppUser } from '../entities/app-user.entity';
 import { App } from '../entities/app.entity';
@@ -10,7 +10,8 @@ import { Profile } from '../entities/profile.entity';
 export class AppService {
 	constructor(
 		@InjectRepository(App) private readonly appRepo: Repository<App>,
-		@InjectRepository(AppUser) private readonly appUserRepo: Repository<AppUser>,
+		@InjectRepository(AppUser)
+		private readonly appUserRepo: Repository<AppUser>,
 	) {}
 
 	public all() {
@@ -48,8 +49,15 @@ export class AppService {
 			where: {
 				appKey: key,
 				isOwner: 1,
-			}
+			},
 		});
 		return appUser.userId;
+	}
+
+	public async getByUserId(userId: string): Promise<App[]> {
+		const results = await this.appUserRepo.find({ where: { userId } });
+		return this.appRepo.find({
+			key: In(results.map(r => r.appKey)),
+		});
 	}
 }
