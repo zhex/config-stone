@@ -5,14 +5,17 @@ import {
 	HttpCode,
 	Param,
 	Post,
+	UseGuards,
 	ValidationPipe,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { ItemSetDTO } from '../../dto/item-set.dto';
+import { UserGuard } from '../../guards/user.guard';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
 
 @Controller('web/api/apps/:appKey/profiles/:profileKey/itemset')
+@UseGuards(UserGuard)
 export class ItemSetController {
 	constructor(
 		private readonly profileService: ProfileService,
@@ -24,8 +27,7 @@ export class ItemSetController {
 	public async updateSet(
 		@Param('appKey') appKey: string,
 		@Param('profileKey') profileKey: string,
-		@Body(new ValidationPipe())
-		data: ItemSetDTO,
+		@Body(new ValidationPipe()) data: ItemSetDTO,
 	) {
 		const profile = await this.profileService.get(appKey, profileKey);
 		if (!profile) {

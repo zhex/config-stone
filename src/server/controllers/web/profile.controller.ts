@@ -8,6 +8,7 @@ import {
 	Param,
 	Post,
 	Put,
+	UseGuards,
 	ValidationPipe,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
@@ -15,11 +16,13 @@ import * as status from 'http-status';
 import { ProfileDTO } from '../../dto/profile.dto';
 import { ReleaseDTO } from '../../dto/release.dto';
 import { Profile } from '../../entities/profile.entity';
+import { UserGuard } from '../../guards/user.guard';
 import { AppService } from '../../services/app.service';
 import { ProfileService } from '../../services/profile.service';
 import { ReleaseService } from '../../services/release.service';
 
 @Controller('web/api/apps/:appKey/profiles')
+@UseGuards(UserGuard)
 export class ProfileController {
 	constructor(
 		private readonly appService: AppService,
@@ -44,8 +47,7 @@ export class ProfileController {
 	@HttpCode(status.CREATED)
 	public async create(
 		@Param('appKey') appKey: string,
-		@Body(new ValidationPipe())
-		data: ProfileDTO,
+		@Body(new ValidationPipe()) data: ProfileDTO,
 	) {
 		const app = await this.appService.get(appKey);
 		if (!app) {
@@ -63,8 +65,7 @@ export class ProfileController {
 	public async update(
 		@Param('appKey') appKey: string,
 		@Param('key') key: string,
-		@Body(new ValidationPipe())
-		data: Partial<ProfileDTO>,
+		@Body(new ValidationPipe()) data: Partial<ProfileDTO>,
 	) {
 		const profile = await this.get(appKey, key);
 		if (!profile) {
@@ -113,8 +114,7 @@ export class ProfileController {
 	public async release(
 		@Param('appKey') appKey: string,
 		@Param('key') key: string,
-		@Body(new ValidationPipe())
-		data: ReleaseDTO,
+		@Body(new ValidationPipe()) data: ReleaseDTO,
 	) {
 		const profile = await this.profileService.get(appKey, key);
 		if (!profile) {

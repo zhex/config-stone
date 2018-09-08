@@ -7,14 +7,16 @@ import {
 	HttpCode,
 	Param,
 	Post,
-	Put,
+	Put, UseGuards,
 	ValidationPipe,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { AppDTO } from '../../dto/app.dto';
+import { UserGuard } from '../../guards/user.guard';
 import { AppService } from '../../services/app.service';
 
 @Controller('web/api/apps')
+@UseGuards(UserGuard)
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 

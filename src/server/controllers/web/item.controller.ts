@@ -7,17 +7,19 @@ import {
 	HttpCode,
 	Param,
 	Post,
-	Put,
+	Put, UseGuards,
 	ValidationPipe,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import * as status from 'http-status';
 import { ItemDTO } from '../../dto/item.dto';
 import { Item } from '../../entities/item.entity';
+import { UserGuard } from '../../guards/user.guard';
 import { ItemService } from '../../services/item.service';
 import { ProfileService } from '../../services/profile.service';
 
 @Controller('web/api/apps/:appKey/profiles/:profileKey/items')
+@UseGuards(UserGuard)
 export class ItemController {
 	constructor(
 		private readonly profileService: ProfileService,

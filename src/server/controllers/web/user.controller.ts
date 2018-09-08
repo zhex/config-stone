@@ -6,13 +6,15 @@ import {
 	HttpCode,
 	Param,
 	Post,
-	Put,
+	Put, UseGuards,
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { UserDTO } from '../../dto/user.dto';
+import { UserGuard } from '../../guards/user.guard';
 import { UserService } from '../../services/user.service';
 
 @Controller('web/api/users')
+@UseGuards(UserGuard)
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
