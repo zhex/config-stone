@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import * as status from 'http-status';
 import { AppDTO } from '../../dto/app.dto';
+import { AppOwnerGuard } from '../../guards/app-owner.guard';
 import { UserGuard } from '../../guards/user.guard';
 import { AppService } from '../../services/app.service';
 
@@ -41,6 +42,7 @@ export class AppController {
 	}
 
 	@Put(':key')
+	@UseGuards(AppOwnerGuard)
 	@HttpCode(status.NO_CONTENT)
 	public async update(
 		@Param('key') key: string,
@@ -56,6 +58,7 @@ export class AppController {
 	}
 
 	@Delete(':key')
+	@UseGuards(AppOwnerGuard)
 	@HttpCode(status.NO_CONTENT)
 	public async delete(@Param('key') key: string) {
 		await this.appService.del(key);

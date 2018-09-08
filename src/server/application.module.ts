@@ -15,6 +15,7 @@ import { AuthController } from './controllers/web/auth.controller';
 import { ItemController } from './controllers/web/item.controller';
 import { ProfileController } from './controllers/web/profile.controller';
 import { UserController } from './controllers/web/user.controller';
+import { AppUser } from './entities/app-user.entity';
 import { App } from './entities/app.entity';
 import { Item } from './entities/item.entity';
 import { Profile } from './entities/profile.entity';
@@ -40,6 +41,7 @@ import { UserService } from './services/user.service';
 			Release,
 			ReleaseHistory,
 			User,
+			AppUser,
 		]),
 	],
 	controllers: [

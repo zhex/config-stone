@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getManager, Repository } from 'typeorm';
 import { AppDTO } from '../dto/app.dto';
+import { AppUser } from '../entities/app-user.entity';
 import { App } from '../entities/app.entity';
 import { Profile } from '../entities/profile.entity';
 
@@ -9,6 +10,7 @@ import { Profile } from '../entities/profile.entity';
 export class AppService {
 	constructor(
 		@InjectRepository(App) private readonly appRepo: Repository<App>,
+		@InjectRepository(AppUser) private readonly appUserRepo: Repository<AppUser>,
 	) {}
 
 	public all() {
@@ -39,5 +41,15 @@ export class AppService {
 
 	public async del(key: string) {
 		return this.appRepo.delete({ key });
+	}
+
+	public async getOwnerId(key: string): Promise<number> {
+		const appUser = await this.appUserRepo.findOne({
+			where: {
+				appKey: key,
+				isOwner: 1,
+			}
+		});
+		return appUser.userId;
 	}
 }
