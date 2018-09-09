@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProfileDTO } from '../dto/profile.dto';
+import { Item } from '../entities/item.entity';
 import { Profile } from '../entities/profile.entity';
 import { Release } from '../entities/release.entity';
 import { EtcdService } from './etcd.service';
@@ -33,7 +34,11 @@ export class ProfileService {
 	}
 
 	public async del(appKey: string, key: string) {
-		await this.profileRepo.delete({ appKey, key });
+		await this.profileRepo.manager.transaction(async t => {
+			await t.delete(Profile,{ appKey, key });
+			await t.delete(Item, { appKey, profileKey: key });
+		});
+
 		await this.etcdService.deleteConfig(appKey, key);
 		return true;
 	}

@@ -68,6 +68,16 @@ export class EtcdService {
 			.exec();
 	}
 
+	public deleteConfigsByAppKey(appKey: string) {
+		const prefix = [this.prefix, appKey].join('/');
+		for (const key of this.memStorage.keys()) {
+			if (key.startsWith(prefix)) {
+				this.memStorage.delete(key);
+			}
+		}
+		return this.client.delete().prefix(prefix).exec();
+	}
+
 	public getConfigKey(appKey: string, profileKey: string) {
 		return [this.prefix, appKey, profileKey].join('/');
 	}
