@@ -28,7 +28,7 @@ export class AppController {
 	public async all(@Req() req: Request) {
 		return req.user.isAdmin
 			? this.appService.all()
-			: this.appService.getOwnerId(req.user.id);
+			: this.appService.getByUserId(req.user.id);
 	}
 
 	@Get(':key')
