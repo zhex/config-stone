@@ -38,8 +38,8 @@ export class AppController {
 
 	@Post()
 	@HttpCode(status.CREATED)
-	public async create(@Body(new ValidationPipe()) data: AppDTO) {
-		await this.appService.create(data);
+	public async create(@Body(new ValidationPipe()) data: AppDTO, @Req() req: Request) {
+		await this.appService.create(data, req.user);
 		return null;
 	}
 

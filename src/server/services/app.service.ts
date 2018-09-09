@@ -5,6 +5,7 @@ import { AppDTO } from '../dto/app.dto';
 import { AppUser } from '../entities/app-user.entity';
 import { App } from '../entities/app.entity';
 import { Profile } from '../entities/profile.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class AppService {
@@ -22,7 +23,7 @@ export class AppService {
 		return this.appRepo.findOne({ where: { key } });
 	}
 
-	public async create(data: AppDTO): Promise<App> {
+	public async create(data: AppDTO, user: User): Promise<App> {
 		let app;
 		await getManager().transaction(async t => {
 			app = await t.save(App, data);
@@ -30,6 +31,11 @@ export class AppService {
 				name: 'Default',
 				key: 'default',
 				appKey: app.key,
+			});
+			await t.insert(AppUser, {
+				appKey: app.key,
+				userId: user.id,
+				isOwner: 1,
 			});
 		});
 		return app;
