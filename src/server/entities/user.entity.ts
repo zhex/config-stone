@@ -25,7 +25,7 @@ export class User extends Base {
 	@Column('tinyint', { width: 1, default: UserStatus.ENABLED })
 	public status: UserStatus;
 
-	@Column('tinyint', { width: 1, default: 0 })
+	@Column('tinyint', { name: 'is_admin', width: 1, default: 0 })
 	public isAdmin: number;
 
 	public comparePassword(pass: string): boolean {
