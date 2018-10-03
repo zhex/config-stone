@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as morgan from 'morgan';
 import * as passport from 'passport';
@@ -24,6 +25,7 @@ import { injectWebpack } from './middlewares/webpack';
 		app.useGlobalFilters(new FallbackException());
 	}
 
+	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
 	app.listen(3000);
 })();

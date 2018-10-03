@@ -1,4 +1,5 @@
 import { compareSync, hashSync } from 'bcrypt';
+import { Exclude } from 'class-transformer';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import { Base } from './base.entity';
 
@@ -17,6 +18,7 @@ export class User extends Base {
 	public email: string;
 
 	@Column('varchar', { length: 100 })
+	@Exclude()
 	public password: string;
 
 	@Column('varchar', { length: 100 })

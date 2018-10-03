@@ -1,3 +1,4 @@
+import { classToPlain } from 'class-transformer';
 import {
 	CreateDateColumn,
 	PrimaryGeneratedColumn,
@@ -12,4 +13,8 @@ export class Base {
 
 	@UpdateDateColumn({ name: 'updated_at' })
 	public updatedAt: Date;
+
+	public toJSON() {
+		return classToPlain(this);
+	}
 }
