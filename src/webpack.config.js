@@ -1,6 +1,6 @@
 const { join } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TSCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const webpack = require('webpack');
 
@@ -46,16 +46,11 @@ module.exports = {
 			},
 			{
 				test: /antd\.css$/,
-				use: [
-					MiniCssExtractPlugin.loader,
-					'css-loader',
-				]
+				use: [MiniCssExtractPlugin.loader, 'css-loader'],
 			},
 			{
 				test: /\.css$/,
-				exclude: [
-					/antd\.css$/
-				],
+				exclude: [/antd\.css$/],
 				use: [
 					MiniCssExtractPlugin.loader,
 					{
@@ -63,8 +58,8 @@ module.exports = {
 						options: {
 							modules: true,
 						},
-					}
-				]
+					},
+				],
 			},
 		],
 	},

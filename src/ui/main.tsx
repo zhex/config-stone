@@ -11,9 +11,9 @@ render(
 
 if (process.env.NODE_ENV !== 'production') {
 	// tslint:disable-next-line:no-var-requires
-	const {whyDidYouUpdate} = require('why-did-you-update');
+	const { whyDidYouUpdate } = require('why-did-you-update');
 	whyDidYouUpdate(React);
-  }
+}
 
 if ((module as any).hot) {
 	(module as any).hot.accept();

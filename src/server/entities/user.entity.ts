@@ -18,7 +18,7 @@ export class User extends Base {
 	public email: string;
 
 	@Column('varchar', { length: 100 })
-	@Exclude()
+	@Exclude({ toPlainOnly: true })
 	public password: string;
 
 	@Column('varchar', { length: 100 })

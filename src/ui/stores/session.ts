@@ -11,12 +11,13 @@ export const SessionStore = types
 		login: flow(function*(email: string, password: string) {
 			self.loading = true;
 			try {
-				const result = yield api.post('/session/authorize', {
+				self.user = yield api.post('/session/authorize', {
 					email,
 					password,
 				});
 			} catch (err) {
 				// todo
+				self.user = null;
 			} finally {
 				self.loading = false;
 			}

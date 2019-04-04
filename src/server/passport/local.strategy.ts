@@ -23,7 +23,7 @@ export class LocalStrategy extends Strategy {
 		passport.deserializeUser(async (id: number, done) => {
 			try {
 				const user = await userService.find(id);
-				done(null, user.toJSON());
+				done(null, user ? user.toJSON() : null);
 			} catch (err) {
 				done(err);
 			}
