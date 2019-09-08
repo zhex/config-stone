@@ -1,14 +1,7 @@
-import {
-	Module,
-	NestModule,
-	OnModuleInit,
-	RequestMethod,
-} from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NextFunction, Request, Response } from 'express';
 import * as passport from 'passport';
-import { logger } from './common/logger';
 import { ConfigController } from './controllers/config.controller';
 import { AppController } from './controllers/web/app.controller';
 import { AuthController } from './controllers/web/auth.controller';
@@ -63,18 +56,7 @@ import { UserService } from './services/user.service';
 		LocalStrategy,
 	],
 })
-export class ApplicationModule implements OnModuleInit, NestModule {
-	private etcdService: EtcdService;
-
-	constructor(private readonly moduleRef: ModuleRef) {
-		this.etcdService = this.moduleRef.get(EtcdService);
-	}
-
-	public onModuleInit() {
-		logger.info('watching config change');
-		this.etcdService.watchConfig();
-	}
-
+export class ApplicationModule implements NestModule {
 	public configure(consumer) {
 		consumer.apply(this.authorize).forRoutes({
 			path: '/web/api/session/authorize',

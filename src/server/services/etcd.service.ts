@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Etcd3 } from 'etcd3';
+import { logger } from '../common/logger';
 import { Events, NotifyService } from './notify.service';
 
 export interface IWatchMessage {
@@ -10,7 +11,7 @@ export interface IWatchMessage {
 }
 
 @Injectable()
-export class EtcdService {
+export class EtcdService implements OnModuleInit {
 	private client: Etcd3;
 	private readonly prefix = 'config-data';
 	private readonly memStorage = new Map<string, any>();
@@ -20,6 +21,11 @@ export class EtcdService {
 		this.client = new Etcd3({
 			hosts: urls.split(','),
 		});
+	}
+
+	public onModuleInit() {
+		logger.info('watching config change');
+		this.watchConfig();
 	}
 
 	public setConfig(appKey: string, profileKey: string, value: any) {
