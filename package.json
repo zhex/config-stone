@@ -35,7 +35,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.2.2",
     "toml-js": "^0.0.8",
-    "typeorm": "^0.2.18",
+    "typeorm": "^0.2.25",
     "winston": "^3.0.0"
   },
   "devDependencies": {
